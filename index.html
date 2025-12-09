@@ -586,7 +586,7 @@
       <div class="preset-name" id="current-preset">ENERGY BURST</div>
     </div>
     <div class="audio-controls" id="audio-controls">
-      <button class="audio-btn playing" id="audio-toggle" title="Play/Pause">🔊</button>
+      <button class="audio-btn" id="audio-toggle" title="Play/Pause">🔇</button>
       <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.05" value="0.4">
     </div>
   </div>
@@ -2422,7 +2422,7 @@ const bgm = document.getElementById('bgm');
 const audioToggle = document.getElementById('audio-toggle');
 const volumeSlider = document.getElementById('volume-slider');
 const audioControls = document.getElementById('audio-controls');
-let audioPlaying = true;
+let audioPlaying = false;
 let audioLoaded = false;
 
 // Check if audio file exists
@@ -2435,9 +2435,9 @@ bgm.addEventListener('error', () => {
   audioControls.style.display = 'none';
 });
 
-// Start at 40% volume
+// Start muted at 40% volume (ready when unmuted)
 bgm.volume = 0.4;
-bgm.muted = false;
+bgm.muted = true;
 
 audioToggle.addEventListener('click', () => {
   if (!audioLoaded) return;
@@ -2465,7 +2465,7 @@ volumeSlider.addEventListener('input', () => {
   }
 });
 
-// Try to autoplay at 40% volume
+// Preload audio (muted)
 bgm.play().catch(() => {});
 </script>
 </body>
