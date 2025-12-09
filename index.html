@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Shader Lab Pro 2.4.0</title>
+  <title>Shader Lab Pro 2.4.1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -511,6 +511,65 @@
         font-size:7px;
       }
     }
+    /* Audio Player */
+    .audio-controls {
+      position:absolute;
+      bottom:16px;
+      right:16px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background:rgba(10,10,18,0.85);
+      padding:8px 12px;
+      border-radius:20px;
+      border:1px solid var(--border);
+      z-index:100;
+      backdrop-filter:blur(8px);
+      opacity:0.6;
+      transition:opacity 0.3s;
+    }
+    .audio-controls:hover {
+      opacity:1;
+    }
+    .audio-btn {
+      background:none;
+      border:none;
+      color:var(--text-mid);
+      cursor:pointer;
+      font-size:16px;
+      padding:4px;
+      transition:color 0.2s;
+    }
+    .audio-btn:hover {
+      color:var(--accent-primary);
+    }
+    .audio-btn.playing {
+      color:var(--accent-primary);
+    }
+    .volume-slider {
+      width:60px;
+      height:4px;
+      -webkit-appearance:none;
+      background:var(--border);
+      border-radius:2px;
+      cursor:pointer;
+    }
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance:none;
+      width:12px;
+      height:12px;
+      background:var(--accent-primary);
+      border-radius:50%;
+      cursor:pointer;
+    }
+    .volume-slider::-moz-range-thumb {
+      width:12px;
+      height:12px;
+      background:var(--accent-primary);
+      border-radius:50%;
+      cursor:pointer;
+      border:none;
+    }
   </style>
 </head>
 <body>
@@ -526,19 +585,26 @@
       <div class="shader-type" id="shader-type">PLASMA VORTEX</div>
       <div class="preset-name" id="current-preset">ENERGY BURST</div>
     </div>
+    <div class="audio-controls" id="audio-controls">
+      <button class="audio-btn playing" id="audio-toggle" title="Play/Pause">🔊</button>
+      <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.05" value="0.1">
+    </div>
   </div>
   
   <div class="control-panel">
     <div class="panel-header">
       <h1 class="panel-title">SHADER LAB PRO</h1>
-      <p class="panel-subtitle">Version 2.4.0 • 6 Epic Shaders</p>
+      <p class="panel-subtitle">Version 2.4.1 • 9 Epic Shaders</p>
       <div class="shader-selector">
         <button class="shader-btn active new-badge" data-shader="0">Plasma Vortex</button>
         <button class="shader-btn new-badge" data-shader="1">Cosmic Mandala</button>
-        <button class="shader-btn" data-shader="2">Neon Spokes</button>
-        <button class="shader-btn" data-shader="3">Crystal Lattice</button>
-        <button class="shader-btn" data-shader="4">Rainbow Nebula</button>
-        <button class="shader-btn" data-shader="5">Inferno Fire</button>
+        <button class="shader-btn new-badge" data-shader="2">Dark Transit</button>
+        <button class="shader-btn new-badge" data-shader="3">Neon Grid</button>
+        <button class="shader-btn new-badge" data-shader="4">Electric Arcs</button>
+        <button class="shader-btn" data-shader="5">Neon Spokes</button>
+        <button class="shader-btn" data-shader="6">Crystal Lattice</button>
+        <button class="shader-btn" data-shader="7">Rainbow Nebula</button>
+        <button class="shader-btn" data-shader="8">Inferno Fire</button>
       </div>
       <button class="export-btn" id="export-btn">Export to Shadertoy</button>
     </div>
@@ -732,10 +798,198 @@
         </div>
       </div>
 
-      <!-- NEON SPOKES CONTROLS -->
+      <!-- ★ DARK TRANSIT CONTROLS (NEW!) -->
       <div class="controls-section" id="controls-2">
         <div class="section-title">Presets</div>
         <div class="presets-grid" id="presets-2"></div>
+        
+        <div class="section-title">Tunnel</div>
+        <div class="control-group">
+          <div class="control-label"><span>Speed</span><span class="control-value" id="val-dt-speed">4.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-dt-speed"></div>
+          <input type="range" id="dt-speed" min="0.5" max="12" step="0.1" value="4"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Radius</span><span class="control-value" id="val-dt-radius">4.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-dt-radius"></div>
+          <input type="range" id="dt-radius" min="2" max="8" step="0.1" value="4"></div>
+        </div>
+        
+        <div class="section-title">Detail</div>
+        <div class="control-group">
+          <div class="control-label"><span>Scoops</span><span class="control-value" id="val-dt-scoops">0.25</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-dt-scoops"></div>
+          <input type="range" id="dt-scoops" min="0.05" max="0.6" step="0.01" value="0.25"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Detail</span><span class="control-value" id="val-dt-detail">0.22</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-dt-detail"></div>
+          <input type="range" id="dt-detail" min="0.05" max="0.5" step="0.01" value="0.22"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Orb Glow</span><span class="control-value" id="val-dt-orb">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-dt-orb"></div>
+          <input type="range" id="dt-orb" min="0" max="3" step="0.05" value="1"></div>
+        </div>
+        
+        <div class="section-title">Color</div>
+        <div class="control-group">
+          <div class="control-label"><span>Brightness</span><span class="control-value" id="val-dt-brightness">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-dt-brightness"></div>
+          <input type="range" id="dt-brightness" min="0.3" max="2.5" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Saturation</span><span class="control-value" id="val-dt-saturation">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-dt-saturation"></div>
+          <input type="range" id="dt-saturation" min="0.2" max="2" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>BG Darkness</span><span class="control-value" id="val-dt-bgdark">0.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-dt-bgdark"></div>
+          <input type="range" id="dt-bgdark" min="0" max="1" step="0.02" value="0"></div>
+        </div>
+      </div>
+
+      <!-- ★ NEON GRID CONTROLS (NEW!) -->
+      <div class="controls-section" id="controls-3">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-3"></div>
+        
+        <div class="section-title">Grid</div>
+        <div class="control-group">
+          <div class="control-label"><span>Speed</span><span class="control-value" id="val-ng-speed">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-speed"></div>
+          <input type="range" id="ng-speed" min="0.1" max="3" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Grid Size</span><span class="control-value" id="val-ng-gridsize">0.10</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-gridsize"></div>
+          <input type="range" id="ng-gridsize" min="0.03" max="0.3" step="0.005" value="0.1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Line Thickness</span><span class="control-value" id="val-ng-linethick">0.02</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-linethick"></div>
+          <input type="range" id="ng-linethick" min="0.003" max="0.05" step="0.001" value="0.02"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Glow</span><span class="control-value" id="val-ng-glow">1.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-glow"></div>
+          <input type="range" id="ng-glow" min="0.5" max="4" step="0.1" value="1.5"></div>
+        </div>
+        
+        <div class="section-title">Animation</div>
+        <div class="control-group">
+          <div class="control-label"><span>Pulse</span><span class="control-value" id="val-ng-pulse">2.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-pulse"></div>
+          <input type="range" id="ng-pulse" min="0" max="6" step="0.1" value="2"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Depth</span><span class="control-value" id="val-ng-depth">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-depth"></div>
+          <input type="range" id="ng-depth" min="0.3" max="4" step="0.1" value="1"></div>
+        </div>
+        
+        <div class="section-title">Color</div>
+        <div class="control-group">
+          <div class="control-label"><span>Hue</span><span class="control-value" id="val-ng-hue">0.85</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-hue"></div>
+          <input type="range" id="ng-hue" min="0" max="1" step="0.01" value="0.85"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Saturation</span><span class="control-value" id="val-ng-saturation">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-saturation"></div>
+          <input type="range" id="ng-saturation" min="0.2" max="2" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>BG Darkness</span><span class="control-value" id="val-ng-bgdark">0.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-bgdark"></div>
+          <input type="range" id="ng-bgdark" min="0" max="1" step="0.02" value="0"></div>
+        </div>
+        
+        <div class="section-title">Effects</div>
+        <div class="control-group">
+          <div class="control-label"><span>Scanlines</span><span class="control-value" id="val-ng-scanlines">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-scanlines"></div>
+          <input type="range" id="ng-scanlines" min="0" max="1" step="0.05" value="0.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Chromatic</span><span class="control-value" id="val-ng-chromatic">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ng-chromatic"></div>
+          <input type="range" id="ng-chromatic" min="0" max="2" step="0.05" value="0.5"></div>
+        </div>
+      </div>
+
+      <!-- ★ ELECTRIC ARCS CONTROLS (NEW!) -->
+      <div class="controls-section" id="controls-4">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-4"></div>
+        
+        <div class="section-title">Arcs</div>
+        <div class="control-group">
+          <div class="control-label"><span>Num Arcs</span><span class="control-value" id="val-ea-arcs">5</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-arcs"></div>
+          <input type="range" id="ea-arcs" min="1" max="8" step="1" value="5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Speed</span><span class="control-value" id="val-ea-speed">2.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-speed"></div>
+          <input type="range" id="ea-speed" min="0.2" max="5" step="0.1" value="2"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Thickness</span><span class="control-value" id="val-ea-thickness">0.02</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-thickness"></div>
+          <input type="range" id="ea-thickness" min="0.005" max="0.05" step="0.001" value="0.02"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Glow</span><span class="control-value" id="val-ea-glow">1.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-glow"></div>
+          <input type="range" id="ea-glow" min="0.5" max="4" step="0.1" value="1.5"></div>
+        </div>
+        
+        <div class="section-title">Detail</div>
+        <div class="control-group">
+          <div class="control-label"><span>Branching</span><span class="control-value" id="val-ea-branch">0.80</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-branch"></div>
+          <input type="range" id="ea-branch" min="0" max="1.5" step="0.05" value="0.8"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Jitter</span><span class="control-value" id="val-ea-jitter">0.30</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-jitter"></div>
+          <input type="range" id="ea-jitter" min="0.05" max="0.6" step="0.01" value="0.3"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Spread</span><span class="control-value" id="val-ea-spread">0.30</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-spread"></div>
+          <input type="range" id="ea-spread" min="0.1" max="0.6" step="0.02" value="0.3"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Pulse</span><span class="control-value" id="val-ea-pulse">3.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-pulse"></div>
+          <input type="range" id="ea-pulse" min="0" max="10" step="0.2" value="3"></div>
+        </div>
+        
+        <div class="section-title">Color</div>
+        <div class="control-group">
+          <div class="control-label"><span>Hue</span><span class="control-value" id="val-ea-hue">0.60</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-hue"></div>
+          <input type="range" id="ea-hue" min="0" max="1" step="0.01" value="0.6"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Saturation</span><span class="control-value" id="val-ea-saturation">0.80</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-saturation"></div>
+          <input type="range" id="ea-saturation" min="0.2" max="2" step="0.05" value="0.8"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>BG Darkness</span><span class="control-value" id="val-ea-bgdark">0.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ea-bgdark"></div>
+          <input type="range" id="ea-bgdark" min="0" max="1" step="0.02" value="0"></div>
+        </div>
+      </div>
+
+      <!-- NEON SPOKES CONTROLS -->
+      <div class="controls-section" id="controls-5">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-5"></div>
         
         <div class="section-title">Motion</div>
         <div class="control-group">
@@ -780,9 +1034,9 @@
       </div>
 
       <!-- CRYSTAL LATTICE CONTROLS -->
-      <div class="controls-section" id="controls-3">
+      <div class="controls-section" id="controls-6">
         <div class="section-title">Presets</div>
-        <div class="presets-grid" id="presets-3"></div>
+        <div class="presets-grid" id="presets-6"></div>
         
         <div class="section-title">Camera &amp; Motion</div>
         <div class="control-group">
@@ -854,9 +1108,9 @@
       </div>
 
       <!-- RAINBOW NEBULA CONTROLS -->
-      <div class="controls-section" id="controls-4">
+      <div class="controls-section" id="controls-7">
         <div class="section-title">Presets</div>
-        <div class="presets-grid" id="presets-4"></div>
+        <div class="presets-grid" id="presets-7"></div>
         
         <div class="section-title">Motion</div>
         <div class="control-group">
@@ -911,9 +1165,9 @@
       </div>
 
       <!-- INFERNO FIRE CONTROLS -->
-      <div class="controls-section" id="controls-5">
+      <div class="controls-section" id="controls-8">
         <div class="section-title">Presets</div>
-        <div class="presets-grid" id="presets-5"></div>
+        <div class="presets-grid" id="presets-8"></div>
         
         <div class="section-title">Flame</div>
         <div class="control-group">
@@ -978,6 +1232,11 @@
     </div>
   </div>
 </div>
+
+<!-- Audio Player -->
+<audio id="bgm" loop preload="auto">
+  <source src="1.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 // ============== SHADER SOURCES ==============
@@ -1469,6 +1728,231 @@ void mainImage(out vec4 fragColor, vec2 fragCoord) {
 void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
 `;
 
+// ★ NEW: Dark Transit - Low tech tunnel (by diatribes, golfed by FabriceNeyret2)
+const darkTransitShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_speed, u_radius, u_scoops, u_detail, u_orb;
+uniform float u_brightness, u_saturation, u_bgdark;
+
+#define T (iTime * u_speed + 5. + 5.*sin(iTime*.3))
+#define P(z) vec3(12.* cos((z)*vec2(.1,.12)), z)
+
+float A(float F, float H, float K, vec3 p) {
+  return abs(dot(sin(F*p*K), vec3(H))) / K;
+}
+
+void mainImage(out vec4 o, in vec2 u) {
+  float t,s,i,d,e;
+  vec3 c = vec3(0.0);
+  vec2 r = iResolution;
+  u = (u - r/2.) / r.y;
+  
+  vec3 p = P(T),
+       Z = normalize(P(T+4.) - p),
+       X = normalize(vec3(Z.z, 0, -Z.x)),
+       D = vec3(u, 1) * mat3(-X, cross(X, Z), Z);
+  
+  for(float i = 0.; i < 28.; i++) {
+    if (d > 30.) break;
+    vec3 X2 = P(p.z);
+    t = sin(iTime);
+    e = length(p - vec3(X2.x + t, X2.y + t*2., 6.+T + t*2.)) - 0.01;
+    e *= u_orb;
+    s = cos(p.z*.6)*2.+ u_radius
+      - min(length(p.xy - X2.x - 6.), length((p-X2).xy))
+      + A(4., u_scoops, .1, p)
+      + A(T+8., u_detail, 2., p);
+    s = min(e, .01 + .3*abs(s));
+    p += D * s;
+    d += s;
+    c += 1./s + 10.*vec3(1, 2, 5)/max(e + .4, .6);
+  }
+  
+  o.rgb = c * c * u_brightness / 1e6;
+  o.rgb = mix(vec3(length(o.rgb) * u_bgdark), o.rgb, u_saturation);
+  o.a = 1.;
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
+// ★ NEW: Neon Grid - Electric cyberpunk grid with glow
+const neonGridShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_speed, u_gridsize, u_linethick, u_glow;
+uniform float u_pulse, u_depth, u_hue, u_saturation;
+uniform float u_bgdark, u_scanlines, u_chromatic;
+
+vec3 hsv2rgb(vec3 c) {
+  vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+  vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+  float t = iTime * u_speed;
+  
+  // Perspective grid
+  vec3 ro = vec3(0, 1.5, t * 2.);
+  vec3 rd = normalize(vec3(uv.x, uv.y - 0.3, 1.0));
+  
+  // Ground plane intersection
+  float d = -ro.y / rd.y;
+  vec3 p = ro + rd * max(d, 0.0);
+  
+  // Grid pattern
+  vec2 grid = abs(fract(p.xz * u_gridsize) - 0.5);
+  float line = min(grid.x, grid.y);
+  float thick = u_linethick * (1.0 + 0.5 * sin(t * u_pulse));
+  
+  // Distance fade
+  float fade = exp(-d * 0.03 * u_depth);
+  
+  // Glow effect
+  float glow = thick / (line + 0.001);
+  glow = pow(glow, 1.5) * u_glow * fade;
+  glow *= smoothstep(0.0, 0.1, d);
+  
+  // Pulse waves
+  float wave = sin(p.z * 0.5 - t * 3.) * 0.5 + 0.5;
+  glow *= 0.5 + wave * 0.5;
+  
+  // Color
+  float hue = u_hue + p.z * 0.02 + t * 0.1;
+  vec3 col = hsv2rgb(vec3(hue, u_saturation, 1.0)) * glow;
+  
+  // Horizon glow
+  float horizon = exp(-abs(uv.y + 0.1) * 5.) * 0.5;
+  col += hsv2rgb(vec3(hue + 0.3, 0.8, horizon));
+  
+  // Scanlines
+  col *= 1.0 - u_scanlines * 0.3 * sin(fragCoord.y * 2.0);
+  
+  // Chromatic aberration
+  if (u_chromatic > 0.0) {
+    vec2 offset = uv * u_chromatic * 0.02;
+    col.r *= 1.0 + length(offset);
+    col.b *= 1.0 - length(offset) * 0.5;
+  }
+  
+  // Background
+  vec3 bg = vec3(u_bgdark * 0.02);
+  col = max(col, bg);
+  
+  fragColor = vec4(col, 1.0);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
+// ★ NEW: Electric Arcs - Lightning and plasma arcs
+const electricArcsShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_arcs, u_speed, u_thickness, u_glow;
+uniform float u_branch, u_jitter, u_hue, u_saturation;
+uniform float u_bgdark, u_pulse, u_spread;
+
+vec3 hsv2rgb(vec3 c) {
+  vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+float hash(vec2 p) {
+  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1,0)), f.x),
+             mix(hash(i + vec2(0,1)), hash(i + vec2(1,1)), f.x), f.y);
+}
+
+float fbm(vec2 p) {
+  float v = 0.0, a = 0.5;
+  for (int i = 0; i < 5; i++) {
+    v += a * noise(p);
+    p *= 2.0;
+    a *= 0.5;
+  }
+  return v;
+}
+
+float lightning(vec2 uv, float seed, float t) {
+  float y = uv.y;
+  float x = uv.x;
+  
+  // Main arc path with noise displacement
+  float path = sin(y * 3.0 + seed * 10.0) * 0.3;
+  path += fbm(vec2(y * 5.0 + t * u_speed, seed * 100.0)) * u_jitter;
+  
+  // Branching
+  float branch = 0.0;
+  for (float i = 0.0; i < 3.0; i++) {
+    float by = y - 0.3 - i * 0.2;
+    if (by > 0.0) {
+      float bp = path + fbm(vec2(by * 8.0 + t, seed * 50.0 + i)) * 0.4;
+      bp += (by * by) * sign(hash(vec2(seed, i)) - 0.5) * u_branch;
+      float bd = abs(x - bp);
+      branch += u_thickness * 0.3 / (bd + 0.01);
+    }
+  }
+  
+  // Main bolt
+  float dist = abs(x - path);
+  float bolt = u_thickness / (dist + 0.005);
+  
+  // Glow
+  bolt = pow(bolt, 1.2) * u_glow;
+  
+  return bolt + branch * u_branch;
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+  vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+  float t = iTime;
+  
+  vec3 col = vec3(u_bgdark * 0.02);
+  
+  // Multiple arcs
+  float numArcs = u_arcs;
+  for (float i = 0.0; i < 8.0; i++) {
+    if (i >= numArcs) break;
+    
+    float seed = i * 0.1 + floor(t * 0.5 + i * 0.3);
+    float offsetX = (i - numArcs * 0.5) * u_spread;
+    vec2 arcUV = uv - vec2(offsetX, 0.0);
+    
+    // Pulse
+    float pulse = 0.5 + 0.5 * sin(t * u_pulse + i * 2.0);
+    
+    float arc = lightning(arcUV, seed, t) * pulse;
+    
+    // Color variation per arc
+    float hue = u_hue + i * 0.05;
+    vec3 arcCol = hsv2rgb(vec3(hue, u_saturation, 1.0));
+    
+    col += arcCol * arc * 0.15;
+  }
+  
+  // Core brightness boost
+  col = pow(col, vec3(0.8));
+  
+  // Clamp and output
+  col = clamp(col, 0.0, 1.0);
+  
+  fragColor = vec4(col, 1.0);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
 // ============== PRESETS ==============
 
 const presetsData = {
@@ -1494,7 +1978,40 @@ const presetsData = {
     { name:"ELECTRIC BLOOM", 'cm-symmetry':8,'cm-layers':5,'cm-complexity':4.5,'cm-ringscale':1.3,'cm-rotspeed':0.6,'cm-pulsespeed':4,'cm-pulseamt':0.8,'cm-spiral':0.3,'cm-glow':3,'cm-falloff':1.5,'cm-colorcycle':2,'cm-hue':5,'cm-saturation':1.8,'cm-edgeglow':0.2,'cm-bloom':0.6,'cm-zoom':0.7 },
     { name:"MEDITATION", 'cm-symmetry':6,'cm-layers':10,'cm-complexity':1.5,'cm-ringscale':2.2,'cm-rotspeed':0.1,'cm-pulsespeed':0.2,'cm-pulseamt':0.1,'cm-spiral':0,'cm-glow':1,'cm-falloff':2.5,'cm-colorcycle':0.05,'cm-hue':2.5,'cm-saturation':0.6,'cm-edgeglow':0.3,'cm-bloom':0.15,'cm-zoom':0.6 }
   ],
-  2: [ // Neon Spokes
+  2: [ // ★ Dark Transit
+    { name:"LOW TECH", 'dt-speed':4,'dt-radius':4,'dt-scoops':0.25,'dt-detail':0.22,'dt-orb':1,'dt-brightness':1,'dt-saturation':1,'dt-bgdark':0 },
+    { name:"WARP CORE", 'dt-speed':6,'dt-radius':3,'dt-scoops':0.3,'dt-detail':0.3,'dt-orb':1.5,'dt-brightness':1.2,'dt-saturation':1.2,'dt-bgdark':0 },
+    { name:"DEEP TUNNEL", 'dt-speed':2,'dt-radius':5,'dt-scoops':0.15,'dt-detail':0.15,'dt-orb':0.5,'dt-brightness':0.8,'dt-saturation':0.8,'dt-bgdark':0.2 },
+    { name:"NEON PIPE", 'dt-speed':5,'dt-radius':3.5,'dt-scoops':0.4,'dt-detail':0.25,'dt-orb':0.8,'dt-brightness':1.5,'dt-saturation':1.5,'dt-bgdark':0 },
+    { name:"VOID RUN", 'dt-speed':8,'dt-radius':4.5,'dt-scoops':0.2,'dt-detail':0.1,'dt-orb':0.3,'dt-brightness':0.6,'dt-saturation':0.6,'dt-bgdark':0.5 },
+    { name:"CYBER CHASE", 'dt-speed':7,'dt-radius':3,'dt-scoops':0.35,'dt-detail':0.35,'dt-orb':1.2,'dt-brightness':1.3,'dt-saturation':1.4,'dt-bgdark':0 },
+    { name:"SLOW DRIFT", 'dt-speed':1.5,'dt-radius':6,'dt-scoops':0.1,'dt-detail':0.08,'dt-orb':0.2,'dt-brightness':0.7,'dt-saturation':0.5,'dt-bgdark':0.3 },
+    { name:"ELECTRIC TUBE", 'dt-speed':4.5,'dt-radius':2.5,'dt-scoops':0.5,'dt-detail':0.4,'dt-orb':2,'dt-brightness':1.8,'dt-saturation':1.6,'dt-bgdark':0 },
+    { name:"HYPERSPACE", 'dt-speed':10,'dt-radius':4,'dt-scoops':0.2,'dt-detail':0.2,'dt-orb':1,'dt-brightness':1,'dt-saturation':1,'dt-bgdark':0 }
+  ],
+  3: [ // ★ Neon Grid
+    { name:"RETROWAVE", 'ng-speed':1,'ng-gridsize':0.1,'ng-linethick':0.02,'ng-glow':1.5,'ng-pulse':2,'ng-depth':1,'ng-hue':0.85,'ng-saturation':1,'ng-bgdark':0,'ng-scanlines':0.5,'ng-chromatic':0.5 },
+    { name:"CYBER CITY", 'ng-speed':1.5,'ng-gridsize':0.15,'ng-linethick':0.015,'ng-glow':2,'ng-pulse':3,'ng-depth':0.8,'ng-hue':0.55,'ng-saturation':1.2,'ng-bgdark':0,'ng-scanlines':0.8,'ng-chromatic':1 },
+    { name:"TRON LEGACY", 'ng-speed':0.8,'ng-gridsize':0.08,'ng-linethick':0.01,'ng-glow':2.5,'ng-pulse':1,'ng-depth':1.2,'ng-hue':0.5,'ng-saturation':0.8,'ng-bgdark':0,'ng-scanlines':0,'ng-chromatic':0 },
+    { name:"NEON HIGHWAY", 'ng-speed':2,'ng-gridsize':0.2,'ng-linethick':0.025,'ng-glow':1.8,'ng-pulse':4,'ng-depth':0.6,'ng-hue':0.0,'ng-saturation':1.5,'ng-bgdark':0,'ng-scanlines':0.3,'ng-chromatic':0.8 },
+    { name:"VOID PLANE", 'ng-speed':0.5,'ng-gridsize':0.12,'ng-linethick':0.008,'ng-glow':1,'ng-pulse':0.5,'ng-depth':2,'ng-hue':0.7,'ng-saturation':0.5,'ng-bgdark':0.5,'ng-scanlines':0,'ng-chromatic':0 },
+    { name:"ELECTRIC DREAM", 'ng-speed':1.2,'ng-gridsize':0.06,'ng-linethick':0.03,'ng-glow':3,'ng-pulse':5,'ng-depth':0.5,'ng-hue':0.15,'ng-saturation':1.8,'ng-bgdark':0,'ng-scanlines':1,'ng-chromatic':1.5 },
+    { name:"MATRIX RAIN", 'ng-speed':1.8,'ng-gridsize':0.05,'ng-linethick':0.012,'ng-glow':2,'ng-pulse':2,'ng-depth':1,'ng-hue':0.35,'ng-saturation':1,'ng-bgdark':0,'ng-scanlines':0.6,'ng-chromatic':0.3 },
+    { name:"SUNSET GRID", 'ng-speed':0.6,'ng-gridsize':0.18,'ng-linethick':0.02,'ng-glow':1.2,'ng-pulse':1.5,'ng-depth':1.5,'ng-hue':0.08,'ng-saturation':1.3,'ng-bgdark':0.1,'ng-scanlines':0.2,'ng-chromatic':0.6 },
+    { name:"DEEP WEB", 'ng-speed':0.3,'ng-gridsize':0.25,'ng-linethick':0.005,'ng-glow':0.8,'ng-pulse':0.8,'ng-depth':3,'ng-hue':0.6,'ng-saturation':0.4,'ng-bgdark':0.8,'ng-scanlines':0,'ng-chromatic':0 }
+  ],
+  4: [ // ★ Electric Arcs
+    { name:"LIGHTNING STORM", 'ea-arcs':5,'ea-speed':2,'ea-thickness':0.02,'ea-glow':1.5,'ea-branch':0.8,'ea-jitter':0.3,'ea-hue':0.6,'ea-saturation':0.8,'ea-bgdark':0,'ea-pulse':3,'ea-spread':0.3 },
+    { name:"PLASMA CHAMBER", 'ea-arcs':8,'ea-speed':3,'ea-thickness':0.015,'ea-glow':2,'ea-branch':0.5,'ea-jitter':0.2,'ea-hue':0.8,'ea-saturation':1,'ea-bgdark':0,'ea-pulse':5,'ea-spread':0.25 },
+    { name:"TESLA COIL", 'ea-arcs':3,'ea-speed':4,'ea-thickness':0.03,'ea-glow':2.5,'ea-branch':1.2,'ea-jitter':0.5,'ea-hue':0.55,'ea-saturation':0.7,'ea-bgdark':0,'ea-pulse':8,'ea-spread':0.15 },
+    { name:"NEON STRIKE", 'ea-arcs':4,'ea-speed':2.5,'ea-thickness':0.025,'ea-glow':1.8,'ea-branch':0.6,'ea-jitter':0.25,'ea-hue':0.9,'ea-saturation':1.2,'ea-bgdark':0,'ea-pulse':4,'ea-spread':0.35 },
+    { name:"VOID SPARKS", 'ea-arcs':6,'ea-speed':1,'ea-thickness':0.01,'ea-glow':1,'ea-branch':0.3,'ea-jitter':0.15,'ea-hue':0.7,'ea-saturation':0.5,'ea-bgdark':0.5,'ea-pulse':1,'ea-spread':0.4 },
+    { name:"CYBER PULSE", 'ea-arcs':7,'ea-speed':3.5,'ea-thickness':0.018,'ea-glow':2.2,'ea-branch':0.9,'ea-jitter':0.35,'ea-hue':0.5,'ea-saturation':1.5,'ea-bgdark':0,'ea-pulse':6,'ea-spread':0.28 },
+    { name:"STATIC FIELD", 'ea-arcs':8,'ea-speed':0.5,'ea-thickness':0.008,'ea-glow':0.8,'ea-branch':0.4,'ea-jitter':0.4,'ea-hue':0.65,'ea-saturation':0.6,'ea-bgdark':0.3,'ea-pulse':0.5,'ea-spread':0.5 },
+    { name:"ENERGY WEB", 'ea-arcs':6,'ea-speed':1.5,'ea-thickness':0.012,'ea-glow':1.3,'ea-branch':1,'ea-jitter':0.2,'ea-hue':0.45,'ea-saturation':0.9,'ea-bgdark':0.1,'ea-pulse':2,'ea-spread':0.32 },
+    { name:"FIRE BOLTS", 'ea-arcs':4,'ea-speed':2.8,'ea-thickness':0.022,'ea-glow':2,'ea-branch':0.7,'ea-jitter':0.3,'ea-hue':0.05,'ea-saturation':1.3,'ea-bgdark':0,'ea-pulse':4,'ea-spread':0.22 }
+  ],
+  5: [ // Neon Spokes
     { name:"NEON TUNNEL", 'ns-speed':3,'ns-zoom':1.1,'ns-iterations':40,'ns-complexity':.2,'ns-stepsize':.6,'ns-saturation':.6,'ns-exposure':1000 },
     { name:"HYPERSPACE", 'ns-speed':6,'ns-zoom':1.5,'ns-iterations':60,'ns-complexity':.15,'ns-stepsize':.4,'ns-saturation':.8,'ns-exposure':800 },
     { name:"CRYSTAL MAZE", 'ns-speed':1.5,'ns-zoom':.8,'ns-iterations':50,'ns-complexity':.3,'ns-stepsize':.7,'ns-saturation':.4,'ns-exposure':1200 },
@@ -1505,7 +2022,7 @@ const presetsData = {
     { name:"SLOW DRIFT", 'ns-speed':.8,'ns-zoom':.7,'ns-iterations':70,'ns-complexity':.4,'ns-stepsize':.9,'ns-saturation':.7,'ns-exposure':1300 },
     { name:"WARP DRIVE", 'ns-speed':8,'ns-zoom':1.8,'ns-iterations':25,'ns-complexity':.12,'ns-stepsize':.35,'ns-saturation':1,'ns-exposure':600 }
   ],
-  3: [ // Crystal Lattice
+  6: [ // Crystal Lattice
     { name:"EMERALD GLOW", 'cl-speed':1,'cl-pathcurve':.15,'cl-stepscale':.6,'cl-swirl':.4,'cl-swirlfreq':.15,'cl-shapesize':.28,'cl-shapemod':.5,'cl-glow':1.2,'cl-colorr':.3,'cl-colorg':1.3,'cl-colorb':1.83,'cl-exposure':50000 },
     { name:"RUBY PULSE", 'cl-speed':.8,'cl-pathcurve':.2,'cl-stepscale':.55,'cl-swirl':.5,'cl-swirlfreq':.12,'cl-shapesize':.32,'cl-shapemod':.6,'cl-glow':1.4,'cl-colorr':0,'cl-colorg':3.5,'cl-colorb':4,'cl-exposure':45000 },
     { name:"DEEP VOID", 'cl-speed':.5,'cl-pathcurve':.08,'cl-stepscale':.7,'cl-swirl':.2,'cl-swirlfreq':.1,'cl-shapesize':.22,'cl-shapemod':.35,'cl-glow':.8,'cl-colorr':4,'cl-colorg':4.2,'cl-colorb':4.5,'cl-exposure':60000 },
@@ -1516,7 +2033,7 @@ const presetsData = {
     { name:"GHOST GRID", 'cl-speed':.6,'cl-pathcurve':.12,'cl-stepscale':.7,'cl-swirl':.35,'cl-swirlfreq':.14,'cl-shapesize':.2,'cl-shapemod':.3,'cl-glow':.7,'cl-colorr':3.14,'cl-colorg':3.14,'cl-colorb':3.14,'cl-exposure':65000 },
     { name:"HYPERCUBE", 'cl-speed':1,'cl-pathcurve':.3,'cl-stepscale':.4,'cl-swirl':1,'cl-swirlfreq':.3,'cl-shapesize':.38,'cl-shapemod':1,'cl-glow':1.3,'cl-colorr':0,'cl-colorg':2.09,'cl-colorb':4.19,'cl-exposure':42000 }
   ],
-  4: [ // Rainbow Nebula
+  7: [ // Rainbow Nebula
     { name:"COSMIC BLOOM", 'rn-speed':4,'rn-turbulence':.8,'rn-iterations':2,'rn-scale':5,'rn-detail':.08,'rn-saturation':1.5,'rn-brightness':.05,'rn-hue':1,'rn-exposure':1000 },
     { name:"AURORA WAVE", 'rn-speed':2,'rn-turbulence':1.2,'rn-iterations':2.5,'rn-scale':7,'rn-detail':.06,'rn-saturation':2,'rn-brightness':.07,'rn-hue':2.5,'rn-exposure':800 },
     { name:"VOID STORM", 'rn-speed':6,'rn-turbulence':1.5,'rn-iterations':1.5,'rn-scale':4,'rn-detail':.1,'rn-saturation':.8,'rn-brightness':.03,'rn-hue':4,'rn-exposure':1500 },
@@ -1527,7 +2044,7 @@ const presetsData = {
     { name:"PLASMA BURST", 'rn-speed':8,'rn-turbulence':1,'rn-iterations':2.8,'rn-scale':4.5,'rn-detail':.09,'rn-saturation':2.2,'rn-brightness':.1,'rn-hue':1.5,'rn-exposure':500 },
     { name:"NEON DREAMS", 'rn-speed':3.5,'rn-turbulence':1.3,'rn-iterations':2.3,'rn-scale':5.5,'rn-detail':.075,'rn-saturation':1.7,'rn-brightness':.055,'rn-hue':2,'rn-exposure':1100 }
   ],
-  5: [ // Inferno Fire
+  8: [ // Inferno Fire
     { name:"CAMPFIRE", 'fire-height':1,'fire-width':1.2,'fire-intensity':2,'fire-timescale':.5,'fire-sparks':100,'fire-smoke':.8,'fire-noise':5 },
     { name:"INFERNO", 'fire-height':1.8,'fire-width':2,'fire-intensity':4,'fire-timescale':.8,'fire-sparks':150,'fire-smoke':1,'fire-noise':6 },
     { name:"CANDLELIGHT", 'fire-height':.5,'fire-width':.5,'fire-intensity':1.5,'fire-timescale':.3,'fire-sparks':30,'fire-smoke':.3,'fire-noise':4 },
@@ -1540,8 +2057,8 @@ const presetsData = {
   ]
 };
 
-const shaderNames = ["PLASMA VORTEX", "COSMIC MANDALA", "NEON SPOKES", "CRYSTAL LATTICE", "RAINBOW NEBULA", "INFERNO FIRE"];
-const shaderSources = [plasmaVortexShader, cosmicMandalaShader, neonSpokesShader, crystalLatticeShader, rainbowNebulaShader, infernoFireShader];
+const shaderNames = ["PLASMA VORTEX", "COSMIC MANDALA", "DARK TRANSIT", "NEON GRID", "ELECTRIC ARCS", "NEON SPOKES", "CRYSTAL LATTICE", "RAINBOW NEBULA", "INFERNO FIRE"];
+const shaderSources = [plasmaVortexShader, cosmicMandalaShader, darkTransitShader, neonGridShader, electricArcsShader, neonSpokesShader, crystalLatticeShader, rainbowNebulaShader, infernoFireShader];
 
 // ============== WEBGL SETUP ==============
 
@@ -1625,10 +2142,13 @@ document.addEventListener('keydown', e => {
 const sliderConfigs = {
   0: ['pv-arms','pv-spin','pv-tightness','pv-coresize','pv-plasma','pv-tendrils','pv-noisescale','pv-turbulence','pv-pulserate','pv-waves','pv-wavespeed','pv-colormode','pv-hue','pv-coreglow','pv-bloom','pv-zoom'],
   1: ['cm-symmetry','cm-layers','cm-complexity','cm-ringscale','cm-rotspeed','cm-pulsespeed','cm-pulseamt','cm-spiral','cm-glow','cm-falloff','cm-colorcycle','cm-hue','cm-saturation','cm-edgeglow','cm-bloom','cm-zoom'],
-  2: ['ns-speed','ns-zoom','ns-iterations','ns-complexity','ns-stepsize','ns-saturation','ns-exposure'],
-  3: ['cl-speed','cl-pathcurve','cl-stepscale','cl-swirl','cl-swirlfreq','cl-shapesize','cl-shapemod','cl-glow','cl-colorr','cl-colorg','cl-colorb','cl-exposure'],
-  4: ['rn-speed','rn-turbulence','rn-iterations','rn-scale','rn-detail','rn-saturation','rn-brightness','rn-hue','rn-exposure'],
-  5: ['fire-height','fire-width','fire-intensity','fire-timescale','fire-sparks','fire-smoke','fire-noise']
+  2: ['dt-speed','dt-radius','dt-scoops','dt-detail','dt-orb','dt-brightness','dt-saturation','dt-bgdark'],
+  3: ['ng-speed','ng-gridsize','ng-linethick','ng-glow','ng-pulse','ng-depth','ng-hue','ng-saturation','ng-bgdark','ng-scanlines','ng-chromatic'],
+  4: ['ea-arcs','ea-speed','ea-thickness','ea-glow','ea-branch','ea-jitter','ea-hue','ea-saturation','ea-bgdark','ea-pulse','ea-spread'],
+  5: ['ns-speed','ns-zoom','ns-iterations','ns-complexity','ns-stepsize','ns-saturation','ns-exposure'],
+  6: ['cl-speed','cl-pathcurve','cl-stepscale','cl-swirl','cl-swirlfreq','cl-shapesize','cl-shapemod','cl-glow','cl-colorr','cl-colorg','cl-colorb','cl-exposure'],
+  7: ['rn-speed','rn-turbulence','rn-iterations','rn-scale','rn-detail','rn-saturation','rn-brightness','rn-hue','rn-exposure'],
+  8: ['fire-height','fire-width','fire-intensity','fire-timescale','fire-sparks','fire-smoke','fire-noise']
 };
 
 const uniformNames = {
@@ -1640,6 +2160,14 @@ const uniformNames = {
   'pv-plasma':'u_plasma','pv-tendrils':'u_tendrils','pv-noisescale':'u_noisescale','pv-turbulence':'u_turbulence',
   'pv-pulserate':'u_pulserate','pv-waves':'u_waves','pv-wavespeed':'u_wavespeed',
   'pv-colormode':'u_colormode','pv-hue':'u_hue','pv-coreglow':'u_coreglow','pv-bloom':'u_bloom','pv-zoom':'u_zoom',
+  'dt-speed':'u_speed','dt-radius':'u_radius','dt-scoops':'u_scoops','dt-detail':'u_detail',
+  'dt-orb':'u_orb','dt-brightness':'u_brightness','dt-saturation':'u_saturation','dt-bgdark':'u_bgdark',
+  'ng-speed':'u_speed','ng-gridsize':'u_gridsize','ng-linethick':'u_linethick','ng-glow':'u_glow',
+  'ng-pulse':'u_pulse','ng-depth':'u_depth','ng-hue':'u_hue','ng-saturation':'u_saturation',
+  'ng-bgdark':'u_bgdark','ng-scanlines':'u_scanlines','ng-chromatic':'u_chromatic',
+  'ea-arcs':'u_arcs','ea-speed':'u_speed','ea-thickness':'u_thickness','ea-glow':'u_glow',
+  'ea-branch':'u_branch','ea-jitter':'u_jitter','ea-hue':'u_hue','ea-saturation':'u_saturation',
+  'ea-bgdark':'u_bgdark','ea-pulse':'u_pulse','ea-spread':'u_spread',
   'ns-speed':'u_speed','ns-zoom':'u_zoom','ns-iterations':'u_iterations','ns-complexity':'u_complexity',
   'ns-stepsize':'u_stepsize','ns-saturation':'u_saturation','ns-exposure':'u_exposure',
   'cl-speed':'u_speed','cl-pathcurve':'u_pathCurve','cl-stepscale':'u_stepScale',
@@ -1679,12 +2207,12 @@ Object.values(sliderConfigs).flat().forEach(id => {
 
 // ============== PRESET SYSTEM ==============
 
-let currentPresetIndex = [0, 0, 0, 0, 0, 0];
+let currentPresetIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 const presetNameEl = document.getElementById('current-preset');
 const shaderTypeEl = document.getElementById('shader-type');
 
 function buildPresetButtons() {
-  for (let s = 0; s < 6; s++) {
+  for (let s = 0; s < 9; s++) {
     const container = document.getElementById('presets-' + s);
     if (!container) continue;
     container.innerHTML = '';
@@ -1750,7 +2278,7 @@ function generateExportCode() {
   const name = shaderNames[idx];
   const preset = presetsData[idx][currentPresetIndex[idx]].name;
   
-  let code = `// ${name} - Exported from Shader Lab Pro 2.4.0
+  let code = `// ${name} - Exported from Shader Lab Pro 2.4.1
 // Preset: ${preset}
 // These presets were created using Shader Lab Pro
 //
@@ -1887,6 +2415,58 @@ buildPresetButtons();
 switchShader(0);
 applyPreset(0, 0);
 requestAnimationFrame(render);
+
+// ============== AUDIO ==============
+
+const bgm = document.getElementById('bgm');
+const audioToggle = document.getElementById('audio-toggle');
+const volumeSlider = document.getElementById('volume-slider');
+const audioControls = document.getElementById('audio-controls');
+let audioPlaying = true;
+let audioLoaded = false;
+
+// Check if audio file exists
+bgm.addEventListener('canplaythrough', () => {
+  audioLoaded = true;
+  audioControls.style.display = 'flex';
+});
+
+bgm.addEventListener('error', () => {
+  audioControls.style.display = 'none';
+});
+
+// Start at 10% volume
+bgm.volume = 0.1;
+bgm.muted = false;
+
+audioToggle.addEventListener('click', () => {
+  if (!audioLoaded) return;
+  
+  if (audioPlaying) {
+    bgm.muted = true;
+    audioToggle.textContent = '🔇';
+    audioToggle.classList.remove('playing');
+  } else {
+    bgm.muted = false;
+    bgm.volume = parseFloat(volumeSlider.value);
+    bgm.play().catch(() => {});
+    audioToggle.textContent = '🔊';
+    audioToggle.classList.add('playing');
+  }
+  audioPlaying = !audioPlaying;
+});
+
+volumeSlider.addEventListener('input', () => {
+  bgm.volume = parseFloat(volumeSlider.value);
+  if (bgm.volume === 0) {
+    audioToggle.textContent = '🔇';
+  } else if (audioPlaying) {
+    audioToggle.textContent = '🔊';
+  }
+});
+
+// Try to autoplay at 10% volume
+bgm.play().catch(() => {});
 </script>
 </body>
 </html>
