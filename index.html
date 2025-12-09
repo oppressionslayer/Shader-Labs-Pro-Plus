@@ -587,7 +587,7 @@
     </div>
     <div class="audio-controls" id="audio-controls">
       <button class="audio-btn playing" id="audio-toggle" title="Play/Pause">🔊</button>
-      <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.05" value="0.1">
+      <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.05" value="0.4">
     </div>
   </div>
   
@@ -2435,8 +2435,8 @@ bgm.addEventListener('error', () => {
   audioControls.style.display = 'none';
 });
 
-// Start at 10% volume
-bgm.volume = 0.1;
+// Start at 40% volume
+bgm.volume = 0.4;
 bgm.muted = false;
 
 audioToggle.addEventListener('click', () => {
@@ -2465,7 +2465,7 @@ volumeSlider.addEventListener('input', () => {
   }
 });
 
-// Try to autoplay at 10% volume
+// Try to autoplay at 40% volume
 bgm.play().catch(() => {});
 </script>
 </body>
