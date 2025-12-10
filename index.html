@@ -133,40 +133,42 @@
       letter-spacing:1px;
     }
     .shader-selector {
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:6px;
       margin-top:10px;
+      position:relative;
     }
-    .shader-btn {
+    .shader-dropdown {
+      width:100%;
+      padding:12px 40px 12px 16px;
       background:var(--bg-card);
       border:1px solid var(--border);
-      border-radius:6px;
-      padding:10px 6px;
+      border-radius:8px;
       font-family:'Rajdhani',sans-serif;
-      font-size:9px;
-      font-weight:700;
-      color:var(--text-mid);
+      font-size:14px;
+      font-weight:600;
+      color:var(--text-light);
       cursor:pointer;
       transition:all 0.2s ease;
-      text-transform:uppercase;
-      letter-spacing:0.3px;
+      appearance:none;
+      -webkit-appearance:none;
+      -moz-appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300e5ff' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position:right 14px center;
     }
-    .shader-btn:hover {
+    .shader-dropdown:hover {
       border-color:var(--accent-cyan);
-      color:var(--accent-cyan);
       box-shadow:0 0 15px var(--glow-cyan);
     }
-    .shader-btn.active {
-      background:linear-gradient(135deg,rgba(0,229,255,0.2),rgba(170,68,255,0.2));
-      border-color:var(--accent-cyan);
-      color:var(--accent-cyan);
-      box-shadow:0 0 20px var(--glow-cyan);
+    .shader-dropdown:focus {
+      outline:none;
+      border-color:var(--accent-primary);
+      box-shadow:0 0 20px var(--glow-green);
     }
-    .shader-btn.new-badge::after {
-      content:"★";
-      margin-left:4px;
-      color:var(--accent-tertiary);
+    .shader-dropdown option {
+      background:var(--bg-panel);
+      color:var(--text-light);
+      padding:10px;
+      font-size:14px;
     }
     .export-btn {
       margin-top:10px;
@@ -463,12 +465,11 @@
         font-size:16px;
       }
       .shader-selector {
-        gap:5px;
         margin-top:8px;
       }
-      .shader-btn {
-        padding:8px 4px;
-        font-size:8px;
+      .shader-dropdown {
+        padding:10px 36px 10px 12px;
+        font-size:13px;
       }
       .export-btn {
         margin-top:8px;
@@ -492,8 +493,9 @@
       .container { 
         grid-template-rows:35vh 1fr;
       }
-      .shader-selector {
-        grid-template-columns:repeat(2,1fr);
+      .shader-dropdown {
+        padding:10px 32px 10px 10px;
+        font-size:12px;
       }
       .presets-grid {
         grid-template-columns:repeat(3,1fr);
@@ -594,17 +596,27 @@
   <div class="control-panel">
     <div class="panel-header">
       <h1 class="panel-title">SHADER LAB PRO</h1>
-      <p class="panel-subtitle">Version 2.4.1 • 9 Epic Shaders</p>
+      <p class="panel-subtitle">Version 2.6.0 • 17 Epic Shaders</p>
       <div class="shader-selector">
-        <button class="shader-btn active new-badge" data-shader="0">Plasma Vortex</button>
-        <button class="shader-btn new-badge" data-shader="1">Cosmic Mandala</button>
-        <button class="shader-btn new-badge" data-shader="2">Dark Transit</button>
-        <button class="shader-btn new-badge" data-shader="3">Neon Grid</button>
-        <button class="shader-btn new-badge" data-shader="4">Electric Arcs</button>
-        <button class="shader-btn" data-shader="5">Neon Spokes</button>
-        <button class="shader-btn" data-shader="6">Crystal Lattice</button>
-        <button class="shader-btn" data-shader="7">Rainbow Nebula</button>
-        <button class="shader-btn" data-shader="8">Inferno Fire</button>
+        <select class="shader-dropdown" id="shader-dropdown">
+          <option value="0">Plasma Vortex</option>
+          <option value="1">Cosmic Mandala</option>
+          <option value="2">Dark Transit</option>
+          <option value="3">Neon Grid</option>
+          <option value="4">Electric Arcs</option>
+          <option value="5">Neon Spokes</option>
+          <option value="6">Crystal Lattice</option>
+          <option value="7">Rainbow Nebula</option>
+          <option value="8">Inferno Fire</option>
+          <option value="9">Wormhole</option>
+          <option value="10">Neon Lines</option>
+          <option value="11">Cyber Waves</option>
+          <option value="12">Spiral</option>
+          <option value="13">Starfield</option>
+          <option value="14">Fractal</option>
+          <option value="15">Maze Lattice</option>
+          <option value="16">Floral Thorns</option>
+        </select>
       </div>
       <button class="export-btn" id="export-btn">Export to Shadertoy</button>
     </div>
@@ -1209,8 +1221,588 @@
         </div>
       </div>
 
+      <!-- ★ WORMHOLE CONTROLS -->
+      <div class="controls-section" id="controls-9">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-9"></div>
+
+        <div class="section-title">Motion</div>
+        <div class="control-group">
+          <div class="control-label"><span>Speed</span><span class="control-value" id="val-wh-speed">2.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-speed"></div>
+          <input type="range" id="wh-speed" min="0.5" max="6" step="0.1" value="2"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Sway</span><span class="control-value" id="val-wh-sway">0.80</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-sway"></div>
+          <input type="range" id="wh-sway" min="0" max="3" step="0.05" value="0.8"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Twist</span><span class="control-value" id="val-wh-twist">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-twist"></div>
+          <input type="range" id="wh-twist" min="0" max="3" step="0.05" value="1"></div>
+        </div>
+
+        <div class="section-title">Stars</div>
+        <div class="control-group">
+          <div class="control-label"><span>Star Strength</span><span class="control-value" id="val-wh-starStrength">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-starStrength"></div>
+          <input type="range" id="wh-starStrength" min="0.1" max="4" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Star Density</span><span class="control-value" id="val-wh-starDensity">4.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-starDensity"></div>
+          <input type="range" id="wh-starDensity" min="1" max="10" step="0.2" value="4"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Star Size</span><span class="control-value" id="val-wh-starSize">0.06</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-starSize"></div>
+          <input type="range" id="wh-starSize" min="0.01" max="0.2" step="0.005" value="0.06"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Twinkle</span><span class="control-value" id="val-wh-twinkle">0.20</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-twinkle"></div>
+          <input type="range" id="wh-twinkle" min="0" max="0.5" step="0.02" value="0.2"></div>
+        </div>
+
+        <div class="section-title">Tunnel</div>
+        <div class="control-group">
+          <div class="control-label"><span>Tunnel Radius</span><span class="control-value" id="val-wh-tunnelRadius">4.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-tunnelRadius"></div>
+          <input type="range" id="wh-tunnelRadius" min="2" max="10" step="0.2" value="4"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Cave Noise</span><span class="control-value" id="val-wh-caveNoise">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-caveNoise"></div>
+          <input type="range" id="wh-caveNoise" min="0" max="4" step="0.1" value="0.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Wall Glow</span><span class="control-value" id="val-wh-wallGlow">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-wallGlow"></div>
+          <input type="range" id="wh-wallGlow" min="0" max="3" step="0.05" value="0.5"></div>
+        </div>
+
+        <div class="section-title">Color</div>
+        <div class="control-group">
+          <div class="control-label"><span>Hue Shift</span><span class="control-value" id="val-wh-hueShift">0.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-hueShift"></div>
+          <input type="range" id="wh-hueShift" min="0" max="6.28" step="0.05" value="0"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Saturation</span><span class="control-value" id="val-wh-saturation">1.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-saturation"></div>
+          <input type="range" id="wh-saturation" min="0.2" max="3" step="0.05" value="1.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Color Cycle</span><span class="control-value" id="val-wh-colorCycle">0.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-colorCycle"></div>
+          <input type="range" id="wh-colorCycle" min="0" max="0.5" step="0.02" value="0"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Exposure</span><span class="control-value" id="val-wh-exposure">2.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-exposure"></div>
+          <input type="range" id="wh-exposure" min="0.5" max="4" step="0.05" value="2"></div>
+        </div>
+
+        <div class="section-title">Effects</div>
+        <div class="control-group">
+          <div class="control-label"><span>Bloom</span><span class="control-value" id="val-wh-bloom">0.40</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-bloom"></div>
+          <input type="range" id="wh-bloom" min="0" max="1" step="0.02" value="0.4"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Vignette</span><span class="control-value" id="val-wh-vignette">0.35</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-vignette"></div>
+          <input type="range" id="wh-vignette" min="0" max="1" step="0.02" value="0.35"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Grain</span><span class="control-value" id="val-wh-grain">0.10</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-wh-grain"></div>
+          <input type="range" id="wh-grain" min="0" max="0.5" step="0.02" value="0.1"></div>
+        </div>
+      </div>
+
+      <!-- ★ NEON LINES CONTROLS -->
+      <div class="controls-section" id="controls-10">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-10"></div>
+
+        <div class="section-title">Lines</div>
+        <div class="control-group">
+          <div class="control-label"><span>Speed</span><span class="control-value" id="val-nl-speed">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-speed"></div>
+          <input type="range" id="nl-speed" min="0.1" max="3" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Line Count</span><span class="control-value" id="val-nl-lineCount">10</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-lineCount"></div>
+          <input type="range" id="nl-lineCount" min="3" max="20" step="1" value="10"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Line Width</span><span class="control-value" id="val-nl-lineWidth">0.02</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-lineWidth"></div>
+          <input type="range" id="nl-lineWidth" min="0.005" max="0.05" step="0.002" value="0.02"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Glow</span><span class="control-value" id="val-nl-glow">1.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-glow"></div>
+          <input type="range" id="nl-glow" min="0.5" max="4" step="0.1" value="1.5"></div>
+        </div>
+
+        <div class="section-title">Wave</div>
+        <div class="control-group">
+          <div class="control-label"><span>Wave Amplitude</span><span class="control-value" id="val-nl-waveAmp">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-waveAmp"></div>
+          <input type="range" id="nl-waveAmp" min="0.1" max="1.5" step="0.05" value="0.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Wave Frequency</span><span class="control-value" id="val-nl-waveFreq">3.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-waveFreq"></div>
+          <input type="range" id="nl-waveFreq" min="1" max="8" step="0.2" value="3"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Pulse</span><span class="control-value" id="val-nl-pulse">2.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-pulse"></div>
+          <input type="range" id="nl-pulse" min="0" max="5" step="0.2" value="2"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Trail</span><span class="control-value" id="val-nl-trail">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-trail"></div>
+          <input type="range" id="nl-trail" min="0" max="2" step="0.1" value="0.5"></div>
+        </div>
+
+        <div class="section-title">Color</div>
+        <div class="control-group">
+          <div class="control-label"><span>Hue</span><span class="control-value" id="val-nl-hue">0.60</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-hue"></div>
+          <input type="range" id="nl-hue" min="0" max="1" step="0.02" value="0.6"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Saturation</span><span class="control-value" id="val-nl-saturation">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-saturation"></div>
+          <input type="range" id="nl-saturation" min="0.2" max="2" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>BG Darkness</span><span class="control-value" id="val-nl-bgdark">0.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-nl-bgdark"></div>
+          <input type="range" id="nl-bgdark" min="0" max="1" step="0.05" value="0"></div>
+        </div>
+      </div>
+
+      <!-- ★ CYBER WAVES CONTROLS -->
+      <div class="controls-section" id="controls-11">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-11"></div>
+
+        <div class="section-title">Waves</div>
+        <div class="control-group">
+          <div class="control-label"><span>Speed</span><span class="control-value" id="val-cw-speed">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-speed"></div>
+          <input type="range" id="cw-speed" min="0.2" max="3" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Wave Height</span><span class="control-value" id="val-cw-waveHeight">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-waveHeight"></div>
+          <input type="range" id="cw-waveHeight" min="0" max="2" step="0.05" value="0.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Wave Scale</span><span class="control-value" id="val-cw-waveScale">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-waveScale"></div>
+          <input type="range" id="cw-waveScale" min="0.2" max="3" step="0.1" value="1"></div>
+        </div>
+
+        <div class="section-title">Grid</div>
+        <div class="control-group">
+          <div class="control-label"><span>Grid Size</span><span class="control-value" id="val-cw-gridSize">0.10</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-gridSize"></div>
+          <input type="range" id="cw-gridSize" min="0.02" max="0.3" step="0.01" value="0.1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Grid Glow</span><span class="control-value" id="val-cw-gridGlow">1.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-gridGlow"></div>
+          <input type="range" id="cw-gridGlow" min="0.5" max="4" step="0.1" value="1.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Perspective</span><span class="control-value" id="val-cw-perspective">0.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-perspective"></div>
+          <input type="range" id="cw-perspective" min="-2" max="3" step="0.1" value="0"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Fog Density</span><span class="control-value" id="val-cw-fogDensity">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-fogDensity"></div>
+          <input type="range" id="cw-fogDensity" min="0" max="3" step="0.1" value="1"></div>
+        </div>
+
+        <div class="section-title">Color &amp; Effects</div>
+        <div class="control-group">
+          <div class="control-label"><span>Hue</span><span class="control-value" id="val-cw-hue">0.55</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-hue"></div>
+          <input type="range" id="cw-hue" min="0" max="1" step="0.02" value="0.55"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Saturation</span><span class="control-value" id="val-cw-saturation">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-saturation"></div>
+          <input type="range" id="cw-saturation" min="0.2" max="2" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Scanlines</span><span class="control-value" id="val-cw-scanlines">0.30</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-scanlines"></div>
+          <input type="range" id="cw-scanlines" min="0" max="1" step="0.05" value="0.3"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Chromatic</span><span class="control-value" id="val-cw-chromatic">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cw-chromatic"></div>
+          <input type="range" id="cw-chromatic" min="0" max="2" step="0.1" value="0.5"></div>
+        </div>
+      </div>
+
+      <!-- ★ SPIRAL CONTROLS -->
+      <div class="controls-section" id="controls-12">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-12"></div>
+
+        <div class="section-title">Geometry</div>
+        <div class="control-group">
+          <div class="control-label"><span>Spiral Arms</span><span class="control-value" id="val-sp-arms">5</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-arms"></div>
+          <input type="range" id="sp-arms" min="1" max="12" step="1" value="5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Twist</span><span class="control-value" id="val-sp-twist">3.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-twist"></div>
+          <input type="range" id="sp-twist" min="0" max="10" step="0.1" value="3"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Scale</span><span class="control-value" id="val-sp-scale">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-scale"></div>
+          <input type="range" id="sp-scale" min="0.2" max="2" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Sharpness</span><span class="control-value" id="val-sp-sharpness">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-sharpness"></div>
+          <input type="range" id="sp-sharpness" min="0.2" max="4" step="0.1" value="1"></div>
+        </div>
+
+        <div class="section-title">Animation</div>
+        <div class="control-group">
+          <div class="control-label"><span>Speed</span><span class="control-value" id="val-sp-speed">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-speed"></div>
+          <input type="range" id="sp-speed" min="0" max="2" step="0.05" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Pulse</span><span class="control-value" id="val-sp-pulse">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-pulse"></div>
+          <input type="range" id="sp-pulse" min="0" max="1" step="0.01" value="0.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Turbulence</span><span class="control-value" id="val-sp-turbulence">0.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-turbulence"></div>
+          <input type="range" id="sp-turbulence" min="0" max="1" step="0.01" value="0"></div>
+        </div>
+
+        <div class="section-title">Color &amp; Effects</div>
+        <div class="control-group">
+          <div class="control-label"><span>Hue</span><span class="control-value" id="val-sp-hue">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-hue"></div>
+          <input type="range" id="sp-hue" min="0" max="1" step="0.01" value="0.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Noise</span><span class="control-value" id="val-sp-noise">0.30</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-noise"></div>
+          <input type="range" id="sp-noise" min="0" max="1" step="0.01" value="0.3"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Vignette</span><span class="control-value" id="val-sp-vignette">0.40</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-vignette"></div>
+          <input type="range" id="sp-vignette" min="0" max="1" step="0.01" value="0.4"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Glow</span><span class="control-value" id="val-sp-glow">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sp-glow"></div>
+          <input type="range" id="sp-glow" min="0" max="1" step="0.1" value="1"></div>
+        </div>
+      </div>
+
+      <!-- ★ STARFIELD CONTROLS -->
+      <div class="controls-section" id="controls-13">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-13"></div>
+
+        <div class="section-title">Volumetric</div>
+        <div class="control-group">
+          <div class="control-label"><span>Volume Steps</span><span class="control-value" id="val-sf-volSteps">18</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-volSteps"></div>
+          <input type="range" id="sf-volSteps" min="5" max="30" step="1" value="18"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Step Size</span><span class="control-value" id="val-sf-stepSize">0.15</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-stepSize"></div>
+          <input type="range" id="sf-stepSize" min="0.05" max="0.5" step="0.01" value="0.15"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Iterations</span><span class="control-value" id="val-sf-iterations">15</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-iterations"></div>
+          <input type="range" id="sf-iterations" min="5" max="25" step="1" value="15"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Brightness</span><span class="control-value" id="val-sf-brightness">0.0020</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-brightness"></div>
+          <input type="range" id="sf-brightness" min="0.0005" max="0.01" step="0.0005" value="0.002"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Dist Fading</span><span class="control-value" id="val-sf-distFading">0.78</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-distFading"></div>
+          <input type="range" id="sf-distFading" min="0.3" max="1" step="0.01" value="0.78"></div>
+        </div>
+
+        <div class="section-title">Trails</div>
+        <div class="control-group">
+          <div class="control-label"><span>Trail Layers</span><span class="control-value" id="val-sf-trailLayers">8</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-trailLayers"></div>
+          <input type="range" id="sf-trailLayers" min="0" max="15" step="1" value="8"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Trail Intensity</span><span class="control-value" id="val-sf-trailIntensity">0.80</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-trailIntensity"></div>
+          <input type="range" id="sf-trailIntensity" min="0" max="1.5" step="0.05" value="0.8"></div>
+        </div>
+
+        <div class="section-title">Animation</div>
+        <div class="control-group">
+          <div class="control-label"><span>Flow Speed</span><span class="control-value" id="val-sf-flowSpeed">0.60</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-flowSpeed"></div>
+          <input type="range" id="sf-flowSpeed" min="0" max="2" step="0.05" value="0.6"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Rotation</span><span class="control-value" id="val-sf-rotSpeed">0.030</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-rotSpeed"></div>
+          <input type="range" id="sf-rotSpeed" min="0" max="0.1" step="0.005" value="0.03"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Center Glow</span><span class="control-value" id="val-sf-centerGlow">0.40</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-centerGlow"></div>
+          <input type="range" id="sf-centerGlow" min="0" max="1" step="0.05" value="0.4"></div>
+        </div>
+
+        <div class="section-title">Color</div>
+        <div class="control-group">
+          <div class="control-label"><span>Saturation</span><span class="control-value" id="val-sf-saturation">0.92</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-saturation"></div>
+          <input type="range" id="sf-saturation" min="0" max="1" step="0.01" value="0.92"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Hue Shift</span><span class="control-value" id="val-sf-hue">0.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-sf-hue"></div>
+          <input type="range" id="sf-hue" min="0" max="1" step="0.01" value="0"></div>
+        </div>
+      </div>
+
+      <!-- ★ FRACTAL CONTROLS -->
+      <div class="controls-section" id="controls-14">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-14"></div>
+
+        <div class="section-title">Geometry</div>
+        <div class="control-group">
+          <div class="control-label"><span>Iterations</span><span class="control-value" id="val-fr-iterations">4</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-fr-iterations"></div>
+          <input type="range" id="fr-iterations" min="1" max="8" step="1" value="4"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Fract Scale</span><span class="control-value" id="val-fr-fractScale">1.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-fr-fractScale"></div>
+          <input type="range" id="fr-fractScale" min="1.1" max="3" step="0.1" value="1.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Zoom</span><span class="control-value" id="val-fr-zoom">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-fr-zoom"></div>
+          <input type="range" id="fr-zoom" min="0.5" max="2" step="0.1" value="1"></div>
+        </div>
+
+        <div class="section-title">Rings</div>
+        <div class="control-group">
+          <div class="control-label"><span>Ring Frequency</span><span class="control-value" id="val-fr-ringFreq">8</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-fr-ringFreq"></div>
+          <input type="range" id="fr-ringFreq" min="2" max="16" step="1" value="8"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Ring Speed</span><span class="control-value" id="val-fr-ringSpeed">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-fr-ringSpeed"></div>
+          <input type="range" id="fr-ringSpeed" min="0" max="3" step="0.1" value="1"></div>
+        </div>
+
+        <div class="section-title">Color</div>
+        <div class="control-group">
+          <div class="control-label"><span>Color Speed</span><span class="control-value" id="val-fr-colorSpeed">0.40</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-fr-colorSpeed"></div>
+          <input type="range" id="fr-colorSpeed" min="0" max="1" step="0.05" value="0.4"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Brightness</span><span class="control-value" id="val-fr-brightness">1.20</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-fr-brightness"></div>
+          <input type="range" id="fr-brightness" min="0.5" max="3" step="0.1" value="1.2"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Falloff</span><span class="control-value" id="val-fr-falloff">1.20</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-fr-falloff"></div>
+          <input type="range" id="fr-falloff" min="0.5" max="2" step="0.1" value="1.2"></div>
+        </div>
+      </div>
+
+      <!-- ★ MAZE LATTICE CONTROLS (Full version) -->
+      <div class="controls-section" id="controls-15">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-15"></div>
+
+        <div class="section-title">Maze Geometry</div>
+        <div class="control-group">
+          <div class="control-label"><span>Tube Width</span><span class="control-value" id="val-ml-tubeWidth">0.20</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-tubeWidth"></div>
+          <input type="range" id="ml-tubeWidth" min="0.1" max="0.4" step="0.01" value="0.2"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Pattern Scale</span><span class="control-value" id="val-ml-patternScale">6.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-patternScale"></div>
+          <input type="range" id="ml-patternScale" min="2" max="15" step="0.5" value="6"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Edge Width</span><span class="control-value" id="val-ml-edgeWidth">0.03</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-edgeWidth"></div>
+          <input type="range" id="ml-edgeWidth" min="0.01" max="0.1" step="0.005" value="0.034"></div>
+        </div>
+
+        <div class="section-title">Animation</div>
+        <div class="control-group">
+          <div class="control-label"><span>Travel Speed</span><span class="control-value" id="val-ml-speed">0.25</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-speed"></div>
+          <input type="range" id="ml-speed" min="0" max="1" step="0.01" value="0.25"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Rotation</span><span class="control-value" id="val-ml-rotationSpeed">0.25</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-rotationSpeed"></div>
+          <input type="range" id="ml-rotationSpeed" min="0" max="0.5" step="0.01" value="0.25"></div>
+        </div>
+
+        <div class="section-title">Lighting &amp; Reflection</div>
+        <div class="control-group">
+          <div class="control-label"><span>Brightness</span><span class="control-value" id="val-ml-brightness">1.20</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-brightness"></div>
+          <input type="range" id="ml-brightness" min="0.5" max="2" step="0.05" value="1.2"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Reflectivity</span><span class="control-value" id="val-ml-reflectivity">0.25</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-reflectivity"></div>
+          <input type="range" id="ml-reflectivity" min="0" max="1" step="0.05" value="0.25"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Warmth</span><span class="control-value" id="val-ml-warmth">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-warmth"></div>
+          <input type="range" id="ml-warmth" min="0" max="1" step="0.05" value="0.5"></div>
+        </div>
+
+        <div class="section-title">Effects</div>
+        <div class="control-group">
+          <div class="control-label"><span>Vignette</span><span class="control-value" id="val-ml-vignette">0.13</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-vignette"></div>
+          <input type="range" id="ml-vignette" min="0" max="0.4" step="0.005" value="0.125"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Fog Distance</span><span class="control-value" id="val-ml-fogDistance">100</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-fogDistance"></div>
+          <input type="range" id="ml-fogDistance" min="30" max="200" step="5" value="100"></div>
+        </div>
+
+        <div class="section-title">Quality</div>
+        <div class="control-group">
+          <div class="control-label"><span>Ray Steps</span><span class="control-value" id="val-ml-raySteps">64</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-raySteps"></div>
+          <input type="range" id="ml-raySteps" min="32" max="128" step="8" value="64"></div>
+        </div>
+
+        <div class="section-title">Darkness & Contrast</div>
+        <div class="control-group">
+          <div class="control-label"><span>Darkness</span><span class="control-value" id="val-ml-darkness">0.60</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-darkness"></div>
+          <input type="range" id="ml-darkness" min="0" max="1" step="0.05" value="0.6"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Contrast</span><span class="control-value" id="val-ml-contrast">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-contrast"></div>
+          <input type="range" id="ml-contrast" min="0" max="1.5" step="0.05" value="0.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Ambient Light</span><span class="control-value" id="val-ml-ambient">0.60</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ml-ambient"></div>
+          <input type="range" id="ml-ambient" min="0.1" max="1" step="0.05" value="0.6"></div>
+        </div>
+      </div>
+
+      <!-- ★ FLORAL THORNS CONTROLS -->
+      <div class="controls-section" id="controls-16">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-16"></div>
+
+        <div class="section-title">Mirror</div>
+        <div class="control-group">
+          <div class="control-label"><span>Mirror Scale</span><span class="control-value" id="val-ft-mirrorScale">0.25</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ft-mirrorScale"></div>
+          <input type="range" id="ft-mirrorScale" min="0.1" max="0.5" step="0.01" value="0.25"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Mirror Offset</span><span class="control-value" id="val-ft-mirrorOffset">0.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ft-mirrorOffset"></div>
+          <input type="range" id="ft-mirrorOffset" min="0.2" max="1" step="0.05" value="0.5"></div>
+        </div>
+
+        <div class="section-title">Animation</div>
+        <div class="control-group">
+          <div class="control-label"><span>Speed</span><span class="control-value" id="val-ft-speed">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ft-speed"></div>
+          <input type="range" id="ft-speed" min="0" max="3" step="0.1" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Rotation Rate</span><span class="control-value" id="val-ft-rotationTime">0.02</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ft-rotationTime"></div>
+          <input type="range" id="ft-rotationTime" min="0" max="0.1" step="0.005" value="0.02"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Z Rotation</span><span class="control-value" id="val-ft-rotationDepth">0.20</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ft-rotationDepth"></div>
+          <input type="range" id="ft-rotationDepth" min="0" max="0.5" step="0.02" value="0.2"></div>
+        </div>
+
+        <div class="section-title">Fractal</div>
+        <div class="control-group">
+          <div class="control-label"><span>Layers</span><span class="control-value" id="val-ft-fractalLayers">6</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ft-fractalLayers"></div>
+          <input type="range" id="ft-fractalLayers" min="3" max="8" step="1" value="6"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Glow</span><span class="control-value" id="val-ft-glowIntensity">0.75</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ft-glowIntensity"></div>
+          <input type="range" id="ft-glowIntensity" min="0.3" max="1.5" step="0.05" value="0.75"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Fog Depth</span><span class="control-value" id="val-ft-fogDepth">0.90</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ft-fogDepth"></div>
+          <input type="range" id="ft-fogDepth" min="0.5" max="1.5" step="0.1" value="0.9"></div>
+        </div>
+
+        <div class="section-title">Tone</div>
+        <div class="control-group">
+          <div class="control-label"><span>Exposure</span><span class="control-value" id="val-ft-exposure">5.0e7</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ft-exposure"></div>
+          <input type="range" id="ft-exposure" min="10000000" max="100000000" step="5000000" value="50000000"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Gamma</span><span class="control-value" id="val-ft-gamma">0.45</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-ft-gamma"></div>
+          <input type="range" id="ft-gamma" min="0.3" max="0.6" step="0.01" value="0.45"></div>
+        </div>
+      </div>
+
       <div class="tip-box">
-        <strong>★ NEW:</strong> Cosmic Mandala &amp; Plasma Vortex! Press SPACE to pause. Mouse drag for orbit control on Neon Spokes.
+        <strong>★ NEW:</strong> 5 bonus shaders - Spiral, Starfield, Fractal, Maze Lattice &amp; Floral Thorns! Press SPACE to pause.
       </div>
     </div>
   </div>
@@ -1728,6 +2320,298 @@ void mainImage(out vec4 fragColor, vec2 fragCoord) {
 void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
 `;
 
+// ★ NEW: Wormhole - Cosmic tunnel with stars
+const wormholeShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform vec4 iMouse;
+uniform float u_speed, u_sway, u_twist, u_starStrength, u_starDensity;
+uniform float u_starSize, u_twinkle, u_tunnelRadius, u_caveNoise, u_wallGlow;
+uniform float u_hueShift, u_saturation, u_colorCycle, u_exposure;
+uniform float u_bloom, u_vignette, u_grain;
+
+#define PI 3.14159265359
+const float EPSILON = 1e-5;
+
+vec3 tanh3(vec3 x) {
+  vec3 e2x = exp(2.0 * clamp(x, -10.0, 10.0));
+  return (e2x - 1.0) / (e2x + 1.0);
+}
+
+mat2 rot2(float a) {
+  float s = sin(a), c = cos(a);
+  return mat2(c, -s, s, c);
+}
+
+vec3 path(float v, float sway, float twist) {
+  return vec3(
+    cos(v * 0.2 * twist + sin(v * 0.1) * 2.0) * 3.0 * sway,
+    sin(v * 0.2 * twist + cos(v * 0.3)) * 3.0 * sway,
+    v
+  );
+}
+
+vec3 hash33(vec3 p3) {
+  p3 = fract(p3 * vec3(0.1031, 0.1030, 0.0973));
+  p3 += dot(p3, p3.yxz + 33.33);
+  return fract((p3.xxy + p3.yxx) * p3.zyx);
+}
+
+float hash13(vec3 p3) {
+  p3 = fract(p3 * 0.1031);
+  p3 += dot(p3, p3.zyx + 31.32);
+  return fract((p3.x + p3.y) * p3.z);
+}
+
+float hash12(vec2 p) {
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}
+
+float fbm(vec3 p) {
+  float amp = 1.0, freq = 1.0, n = 0.0;
+  for(int i = 0; i < 5; i++) {
+    n += amp * abs(dot(cos(p * freq), vec3(0.06)));
+    amp *= 0.5; freq *= 2.0;
+  }
+  return n;
+}
+
+vec3 hueShift(vec3 col, float shift) {
+  vec3 k = vec3(0.57735);
+  float cosAngle = cos(shift);
+  return col * cosAngle + cross(k, col) * sin(shift) + k * dot(k, col) * (1.0 - cosAngle);
+}
+
+vec3 adjustSaturation(vec3 col, float sat) {
+  float grey = dot(col, vec3(0.299, 0.587, 0.114));
+  return mix(vec3(grey), col, sat);
+}
+
+void mainImage(out vec4 O, in vec2 I) {
+  vec2 R = iResolution.xy;
+  vec2 uv = (I * 2.0 - R) / R.y;
+  vec2 m = iMouse.xy / R * 5.0;
+  float t = iTime * u_speed;
+
+  vec3 ro = path(t, u_sway, u_twist);
+  vec3 ta = path(t + 1.0, u_sway, u_twist);
+  vec3 front = normalize(ta - ro);
+  vec3 up = vec3(0.0, 1.0, 0.0);
+  vec3 right = normalize(cross(front, up));
+  up = cross(right, front);
+  vec3 rd = mat3(right, up, front) * normalize(vec3(uv, 1.0));
+
+  float zMax = 60.0, z = 0.1;
+  vec3 col = vec3(0.0);
+  float starCell = u_starDensity;
+
+  for(int i = 0; i < 100; i++) {
+    vec3 p = ro + rd * z;
+    if(iMouse.z > 0.0) { p.xz *= rot2(m.x); p.yz *= rot2(m.y); }
+
+    vec3 q = p; q.z += t * 3.0;
+    vec3 id = floor(q / starCell);
+    vec3 localPos = fract(q / starCell) - 0.5;
+
+    float d = 1e10;
+    vec3 starOffset = (hash33(id) - 0.5) * 0.8;
+    float twinkle = hash13(id + floor(iTime * (2.0 + hash13(id) * 3.0))) * u_twinkle;
+    float starDist = length(localPos * starCell - starOffset * starCell) - u_starSize + twinkle;
+    starDist = max(0.001, starDist);
+    d = min(d, starDist);
+
+    vec3 pathPos = path(p.z, u_sway, u_twist);
+    float caveDist = length(p.xy - pathPos.xy) - u_tunnelRadius;
+    caveDist = abs(caveDist) + 0.01;
+    caveDist += fbm(p * 2.0 + t * 2.0) * u_caveNoise;
+    d = min(d, caveDist);
+    d = d * (1.0 - hash12(uv * 100.0 + iTime) * 0.15);
+
+    float k = sin(p.z + p.x * 0.5 + p.y * 0.3) * 0.5 + 0.5;
+    vec3 starColor = 1.1 + sin(vec3(3.0, 2.0, 1.0) + p.x + p.z + hash13(id) * 6.28);
+    float wallContrib = smoothstep(u_tunnelRadius + 1.0, u_tunnelRadius - 0.5, length(p.xy - pathPos.xy));
+    vec3 wallColor = vec3(0.1, 0.3, 0.8) * wallContrib * u_wallGlow;
+
+    col += u_starStrength * k * starColor / max(d, EPSILON);
+    col += wallColor / max(caveDist * 10.0, EPSILON) * 0.1;
+
+    if(d < EPSILON || z > zMax) break;
+    z += d;
+  }
+
+  col = tanh3(col / 100.0);
+  float cycleHue = u_hueShift + iTime * u_colorCycle;
+  col = hueShift(col, cycleHue);
+  col = adjustSaturation(col, u_saturation);
+  col *= u_exposure;
+  col += col * col * u_bloom;
+  float vig = 1.0 - length(uv) * u_vignette;
+  col *= smoothstep(0.0, 1.0, vig);
+  float grain = (hash12(uv * 1000.0 + iTime * 100.0) - 0.5) * u_grain;
+  col += grain;
+  col = clamp(col, 0.0, 1.0);
+  O = vec4(col, 1.0);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
+// ★ NEW: Neon Lines - Flowing neon lines that move around
+const neonLinesShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_speed, u_lineCount, u_lineWidth, u_glow;
+uniform float u_waveAmp, u_waveFreq, u_hue, u_saturation;
+uniform float u_bgdark, u_pulse, u_trail;
+
+vec3 hsv2rgb(vec3 c) {
+  vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+float hash(float n) { return fract(sin(n) * 43758.5453); }
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+  vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+  float t = iTime * u_speed;
+  vec3 col = vec3(u_bgdark * 0.02);
+
+  float numLines = u_lineCount;
+  for (float i = 0.0; i < 20.0; i++) {
+    if (i >= numLines) break;
+
+    float seed = hash(i * 127.1);
+    float seed2 = hash(i * 311.7);
+
+    // Line path - sinusoidal with variation
+    float freq = u_waveFreq * (0.5 + seed);
+    float amp = u_waveAmp * (0.3 + seed2 * 0.7);
+    float phase = seed * 6.28 + t * (0.5 + seed * 0.5);
+
+    // Horizontal moving lines
+    float lineY = sin(uv.x * freq + phase) * amp;
+    lineY += (seed - 0.5) * 1.5; // Vertical offset
+
+    // Distance to line
+    float d = abs(uv.y - lineY);
+
+    // Glow effect
+    float lineGlow = u_lineWidth / (d + 0.001);
+    lineGlow = pow(lineGlow, 1.5) * u_glow * 0.1;
+
+    // Pulse
+    float pulse = 0.5 + 0.5 * sin(t * u_pulse + i * 1.5);
+    lineGlow *= 0.5 + pulse * 0.5;
+
+    // Trail effect - fade based on x position
+    float trail = smoothstep(-1.5, 0.5, uv.x + sin(t + seed * 6.28) * u_trail);
+    lineGlow *= trail;
+
+    // Color
+    float hue = u_hue + i * 0.08 + t * 0.05;
+    vec3 lineCol = hsv2rgb(vec3(hue, u_saturation, 1.0));
+
+    col += lineCol * lineGlow;
+  }
+
+  // Add some bloom
+  col = pow(col, vec3(0.9));
+  col = clamp(col, 0.0, 1.0);
+
+  fragColor = vec4(col, 1.0);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
+// ★ NEW: Cyber Waves - Digital ocean waves with grid overlay
+const cyberWavesShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_speed, u_waveHeight, u_waveScale, u_gridSize;
+uniform float u_gridGlow, u_hue, u_saturation, u_perspective;
+uniform float u_fogDensity, u_scanlines, u_chromatic;
+
+vec3 hsv2rgb(vec3 c) {
+  vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+float wave(vec2 p, float t) {
+  float w = 0.0;
+  w += sin(p.x * 2.0 + t) * 0.5;
+  w += sin(p.x * 3.0 - p.y * 2.0 + t * 1.3) * 0.25;
+  w += sin(p.y * 4.0 + t * 0.7) * 0.125;
+  w += sin((p.x + p.y) * 5.0 + t * 1.5) * 0.0625;
+  return w;
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+  vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+  float t = iTime * u_speed;
+
+  // Perspective transform for ground plane
+  vec3 ro = vec3(0.0, 2.0 + u_perspective, 0.0);
+  vec3 rd = normalize(vec3(uv.x, uv.y - 0.2, 1.0));
+
+  // Plane intersection
+  float d = -ro.y / rd.y;
+  vec3 col = vec3(0.0);
+
+  if (d > 0.0 && rd.y < 0.0) {
+    vec3 p = ro + rd * d;
+    p.z += t * 3.0;
+
+    // Wave displacement
+    float w = wave(p.xz * u_waveScale, t) * u_waveHeight;
+
+    // Grid lines
+    vec2 grid = abs(fract(p.xz * u_gridSize) - 0.5);
+    float gridLine = min(grid.x, grid.y);
+    float gridGlow = 0.02 / (gridLine + 0.01) * u_gridGlow;
+
+    // Wave contribution to grid brightness
+    gridGlow *= 1.0 + w * 2.0;
+
+    // Distance fog
+    float fog = exp(-d * u_fogDensity * 0.05);
+    gridGlow *= fog;
+
+    // Color based on wave height and position
+    float hue = u_hue + w * 0.2 + p.z * 0.01;
+    vec3 gridCol = hsv2rgb(vec3(hue, u_saturation, 1.0));
+
+    col += gridCol * gridGlow * 0.3;
+
+    // Horizon glow
+    float horizon = exp(-abs(uv.y + 0.1) * 8.0);
+    col += hsv2rgb(vec3(u_hue + 0.1, 0.7, horizon * 0.5));
+  }
+
+  // Sky gradient
+  float sky = smoothstep(-0.1, 0.3, uv.y);
+  col += hsv2rgb(vec3(u_hue + 0.5, 0.3, sky * 0.1));
+
+  // Scanlines
+  col *= 1.0 - u_scanlines * 0.2 * sin(fragCoord.y * 3.0);
+
+  // Chromatic aberration
+  if (u_chromatic > 0.0) {
+    col.r *= 1.0 + length(uv) * u_chromatic * 0.1;
+    col.b *= 1.0 - length(uv) * u_chromatic * 0.05;
+  }
+
+  col = clamp(col, 0.0, 1.0);
+  fragColor = vec4(col, 1.0);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
 // ★ NEW: Dark Transit - Low tech tunnel (by diatribes, golfed by FabriceNeyret2)
 const darkTransitShader = `
 precision highp float;
@@ -1953,6 +2837,297 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
 `;
 
+// ★ Spiral - Polar coordinate spirals
+const spiralShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_arms, u_twist, u_scale, u_speed, u_pulse;
+uniform float u_hue, u_noise, u_vignette, u_sharpness, u_turbulence, u_glow;
+
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p*=2.;a*=.5;}return v;}
+
+vec3 hsv2rgb(vec3 c) {
+  vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+void mainImage(out vec4 fragColor, vec2 fragCoord){
+  vec2 uv=(fragCoord-.5*iResolution)/min(iResolution.x,iResolution.y)*u_scale;
+  float time=iTime*u_speed;
+  if(u_turbulence>0.0) uv+=(vec2(fbm(uv*2.+time*.3),fbm(uv*2.+time*.3+100.))-.5)*u_turbulence*.5;
+  float r=length(uv),angle=atan(uv.y,uv.x);
+  float spiral=pow(sin(angle*u_arms+r*u_twist*10.-time*2.)*.5+.5,u_sharpness);
+  float rings=pow(sin(r*20.-time*3.)*.5+.5,2.);
+  float pattern=mix(spiral,rings,u_pulse);
+  pattern=mix(pattern,pattern*(.5+fbm(uv*3.+time*.5)),u_noise);
+
+  vec3 col1 = hsv2rgb(vec3(u_hue, 0.9, 1.0));
+  vec3 col2 = hsv2rgb(vec3(u_hue + 0.3, 0.8, 0.9));
+  vec3 bgColor = vec3(0.04, 0.04, 0.1);
+
+  vec3 col=mix(bgColor,col1,pattern*.7);
+  col=mix(col,col2,pow(pattern,2.)*.5);
+  if(u_glow>0.5) col+=col1*exp(-r*2.)*pattern*.5;
+  col*=clamp(1.-r*u_vignette,0.,1.);
+  fragColor=vec4(pow(col,vec3(.8)),1.);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
+// ★ Starfield - Volumetric cosmic fractals
+const starfieldShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_volSteps, u_stepSize, u_iterations, u_brightness, u_distFading;
+uniform float u_saturation, u_trailLayers, u_trailIntensity, u_flowSpeed, u_rotSpeed, u_centerGlow, u_hue;
+
+mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+vec3 hash33(vec3 p){p=fract(p*vec3(443.897,441.423,437.195));p+=dot(p,p.yzx+19.19);return fract((p.xxy+p.yxx)*p.zyx);}
+
+vec3 cosmicPal(float t, float hueShift){
+  vec3 a=vec3(.5,.3,.6),b=vec3(.5,.7,.4),c=vec3(1.,.8,.6),d=vec3(.1,.6,.9)+hueShift;
+  return a+b*cos(6.28318*(c*t+d));
+}
+
+float streamTrail(vec2 uv,vec2 p1,vec2 p2,float w){
+  vec2 pa=uv-p1,ba=p2-p1;
+  return exp(-length(pa-ba*clamp(dot(pa,ba)/dot(ba,ba),0.,1.))*w);
+}
+
+void mainImage(out vec4 fragColor, vec2 fragCoord){
+  vec2 uv=(fragCoord-.5*iResolution)/min(iResolution.x,iResolution.y);
+  uv*=1.8+.001*cos(uv.y-.4*iTime);uv.y+=.03*cos(iTime*.8);
+  vec3 ro=vec3(.5,.3,.2),rd=normalize(vec3(uv*.7,1.));
+  float s=.1,fade=1.;vec3 v=vec3(0.);
+  for(int r=0;r<30;r++){
+    if(float(r)>=u_volSteps)break;
+    vec3 p=ro+s*rd*.5;p=abs(vec3(.8)-mod(p,vec3(1.6)));
+    float pa=0.,a=0.;
+    for(int i=0;i<25;i++){
+      if(float(i)>=u_iterations)break;
+      p=abs(p)/dot(p,p)-.52;
+      vec2 rxy=rot(iTime*u_rotSpeed)*p.xy;p=vec3(rxy,p.z);
+      vec2 rxz=rot(iTime*u_rotSpeed*.67)*p.xz;p=vec3(rxz.x,p.y,rxz.y);
+      a+=abs(length(p)-pa);pa=length(p);
+    }
+    float dm=max(0.,.25-a*a*.001);a*=a*a;
+    if(r>6)fade*=1.-dm;
+    v+=fade;v+=vec3(s,s*s,s*s*s)*a*u_brightness*fade;
+    fade*=u_distFading;s+=u_stepSize;
+  }
+  v=mix(vec3(length(v)),v,u_saturation)*.015;
+  vec3 streamCol=vec3(0.);float time=iTime*u_flowSpeed;
+  for(int il=0;il<15;il++){
+    float layer=float(il);
+    if(layer>=u_trailLayers)break;
+    float t=time+layer*.5;
+    vec2 p1=vec2(.3*sin(t*.8+layer),.2*cos(t*.6+layer*.3));
+    vec2 p2=vec2(.4*sin(t*.9+layer+1.),.3*cos(t*.7+layer*.4+2.));
+    float trail=streamTrail(uv,p1,p2,25.+15.*sin(layer+iTime*.4));
+    streamCol+=cosmicPal(layer*.15+length(uv)*.2, u_hue)*trail*(.3+.2*sin(layer+iTime));
+  }
+  vec3 finalCol=v+streamCol*u_trailIntensity;
+  finalCol+=cosmicPal(iTime*.1, u_hue)*u_centerGlow*exp(-3.*length(uv));
+  finalCol+=.09*cosmicPal(length(uv)*.5+iTime*.2, u_hue);
+  finalCol=pow(.71-exp(-finalCol*.727),vec3(.727));
+  fragColor=vec4(finalCol,1.);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
+// ★ Fractal - IQ palette fractal rings
+const fractalShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_iterations, u_fractScale, u_ringFreq, u_ringSpeed;
+uniform float u_colorSpeed, u_brightness, u_falloff, u_zoom;
+
+void mainImage(out vec4 fragColor, vec2 fragCoord){
+  vec2 R=iResolution,U=(fragCoord*2.-R)/R.y*u_zoom;
+  vec4 O=vec4(0.);
+  float l=length(U);
+  float d;
+  for(int i=0;i<8;i++){
+    if(float(i)>=u_iterations)break;
+    U=fract(U*u_fractScale)-.5;
+    d=length(U)*exp(-l);
+    d=pow(abs(.08/sin(d*u_ringFreq+iTime*u_ringSpeed)),u_falloff);
+    O+=d*(.5+.5*cos(6.28*(l+float(i)*.4+iTime*u_colorSpeed+vec4(.26,.42,.56,0))));
+  }
+  fragColor=vec4(O.rgb*u_brightness*.1,1.);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
+// ★ Maze Lattice - Octahedral SDF maze (Full version - Darker/High Contrast)
+const mazeLatticeShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_speed, u_tubeWidth, u_patternScale, u_rotationSpeed;
+uniform float u_edgeWidth, u_reflectivity, u_brightness, u_warmth;
+uniform float u_vignette, u_fogDistance, u_raySteps;
+uniform float u_darkness, u_contrast, u_ambient;
+
+float map(vec3 p, float tw){
+  vec3 ip=floor(p)+.5;
+  p-=ip;
+  vec3 q=abs(p);
+  q=step(q.yzx,q.xyz)*step(q.zxy,q.xyz)*sign(p);
+  q.x=fract(sin(dot(ip+q*.5,vec3(111.67,147.31,27.53)))*43758.5453);
+  p.xy=abs(q.x>.333?q.x>.666?p.xz:p.yz:p.xy);
+  return max(p.x,p.y)-tw;
+}
+
+float trace(vec3 ro,vec3 rd, float tw, float fogDist, float steps){
+  float t=0.;
+  for(int i=0;i<128;i++){
+    if(float(i)>=steps)break;
+    float d=map(ro+rd*t, tw);
+    if(abs(d)<.002*(t*.125+1.)||t>fogDist)break;
+    t+=d;
+  }
+  return min(t,fogDist);
+}
+
+vec3 normal(vec3 p, float tw){
+  vec2 e=vec2(.005,0);
+  return normalize(vec3(
+    map(p+e.xyy,tw)-map(p-e.xyy,tw),
+    map(p+e.yxy,tw)-map(p-e.yxy,tw),
+    map(p+e.yyx,tw)-map(p-e.yyx,tw)
+  ));
+}
+
+float hexTruchet(vec2 p, float scale){
+  p*=scale;
+  vec2 h=vec2(p.x+p.y*.577350269,p.y*1.154700538);
+  vec2 f=fract(h);h-=f;
+  float c=fract((h.x+h.y)/3.);
+  h=c<.666?c<.333?h:h+1.:h+step(f.yx,f);
+  p-=vec2(h.x-h.y*.5,h.y*.8660254);
+  c=fract(cos(dot(h,vec2(41.13,289.57)))*43758.5453);
+  p-=p*step(c,.5)*2.;
+  p-=vec2(-1,0);c=dot(p,p);
+  p-=vec2(1.5,.8660254);c=min(c,dot(p,p));
+  p-=vec2(0,-1.73205);
+  return sqrt(min(c,dot(p,p)));
+}
+
+float n2D(vec2 p){
+  vec2 i=floor(p);p-=i;p*=p*(3.-p*2.);
+  return dot(mat2(fract(sin(vec4(0,41,289,330)+dot(i,vec2(41,289)))*43758.5453))*vec2(1.-p.y,p.y),vec2(1.-p.x,p.x));
+}
+
+void mainImage(out vec4 fragColor, vec2 fragCoord){
+  vec3 rd=vec3(2.*fragCoord-iResolution.xy,iResolution.y);
+  rd=normalize(vec3(rd.xy,sqrt(max(rd.z*rd.z-dot(rd.xy,rd.xy)*.2,0.))));
+  vec2 m=sin(vec2(1.5708,0)+iTime*u_rotationSpeed);
+  rd.xy=rd.xy*mat2(m.xy,-m.y,m.x);
+  rd.xz=rd.xz*mat2(m.xy,-m.y,m.x);
+  vec3 ro=vec3(0,0,iTime*u_speed*4.);
+  vec3 lp=ro+vec3(.2,1.,.3);
+
+  float t=trace(ro,rd,u_tubeWidth,u_fogDistance,u_raySteps);
+  vec3 sp=ro+rd*t;
+  vec3 sn=normal(sp,u_tubeWidth);
+  vec3 n=abs(sn);
+  vec2 puv=n.x>.5?sp.yz:n.y>.5?sp.xz:sp.xy;
+
+  // Base color with noise texture - darkened
+  vec3 darkColor = vec3(.15,.05,.01) * (1.0 - u_darkness * 0.5);
+  vec3 lightColor = vec3(.25,.35,.45) * (1.0 - u_darkness * 0.3);
+  vec3 oCol=mix(darkColor,lightColor,n2D(puv*8.)*.66+n2D(puv*16.)*.34);
+  oCol*=n2D(puv*512.)*1.0+1.2;
+
+  // Hex truchet pattern overlay - enhanced contrast
+  vec2 sc=cos(hexTruchet(puv,u_patternScale)*6.283*vec2(2,4));
+  float patternMask = clamp(dot(sc,vec2(.6))+.5,0.,1.);
+  patternMask = pow(patternMask, 1.0 + u_contrast); // Apply contrast
+  oCol*=patternMask*.95+.05;
+
+  // Edge highlight
+  float edge=1.0-smoothstep(0.0,u_edgeWidth,abs(map(sp,u_tubeWidth)));
+  oCol+=vec3(0.6,0.45,0.2)*edge*0.4;
+
+  // Lighting with adjustable ambient
+  vec3 ld=normalize(lp-sp);
+  float diff=max(dot(ld,sn),0.);
+  float spec=pow(max(dot(reflect(-ld,sn),-rd),0.),32.);
+
+  // Reflection
+  vec3 refl=reflect(rd,sn);
+  float reflSpec=pow(max(dot(refl,ld),0.),16.)*u_reflectivity;
+
+  // Reduced ambient for darker shadows
+  vec3 ambientLight = vec3(.25,.2,.15) * u_ambient;
+  vec3 col=oCol*(diff+ambientLight)+vec3(1.,.6,.2)*spec*1.5+vec3(0.5,0.6,0.8)*reflSpec;
+  col*=u_brightness;
+
+  // Darker fog - blend to near-black instead of bright colors
+  vec3 darkFog = vec3(0.02, 0.02, 0.04) * (1.0 - u_darkness * 0.5);
+  vec3 lightFog = vec3(0.08, 0.06, 0.04);
+  vec3 bg=mix(darkFog, lightFog, -rd.y*.35+.35);
+  col=mix(col,bg,smoothstep(0.,u_fogDistance-25.,t));
+
+  // Vignette and warmth
+  vec2 uv=fragCoord/iResolution;
+  float vig=pow(16.*uv.x*uv.y*(1.-uv.x)*(1.-uv.y),u_vignette);
+  col*=mix(vec3(1),vec3(1.2,1.1,.85),u_warmth)*vig;
+
+  fragColor=vec4(sqrt(clamp(col,0.,1.)),1.);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
+// ★ Floral Thorns - Kaleidoscopic mirror fractal
+const floralThornsShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_speed, u_mirrorScale, u_mirrorOffset, u_rotationDepth, u_rotationTime;
+uniform float u_fractalLayers, u_glowIntensity, u_fogDepth, u_exposure, u_gamma;
+
+vec4 tanhApprox(vec4 x){return (exp(2.0*x)-1.0)/(exp(2.0*x)+1.0);}
+
+void mainImage(out vec4 fragColor, vec2 fragCoord){
+  vec2 uv=(fragCoord-.5*iResolution)/iResolution.y;
+  vec4 o=vec4(0.);
+  float t=-iTime*u_speed;
+  float d=0.,s=0.;
+  vec3 p=vec3(0.);
+  for(int i=0;i<300;i++){
+    s=.007+abs(s)*.1;
+    d+=s;
+    o+=sin(d*u_glowIntensity+vec4(.1,u_fogDepth-p.z,.3,0.))/(abs(s)+1e-4);
+    p=vec3(uv*d,d+iTime*u_speed*4.);
+    p=abs(p*u_mirrorScale)-u_mirrorOffset;
+    float a=u_rotationTime*t+p.z*u_rotationDepth;
+    float ca=cos(a),sa=sin(a);
+    vec2 rotated=vec2(ca*p.x+sa*p.y,-sa*p.x+ca*p.y);
+    p=vec3(rotated,p.z);
+    s=sin(1.0+p.x+p.y);
+    float n=3.;
+    for(int j=0;j<5;j++){
+      if(n>u_fractalLayers*3.)break;
+      vec3 freq=p*n;
+      vec3 timeMod=vec3(0.,2.+sin(iTime*.25)*.8,2.+sin(iTime*.1)*.5);
+      s+=abs(dot(1.75*sin(freq),timeMod))/n;
+      n=n*2.;
+    }
+  }
+  vec4 tone=tanhApprox(o*o/u_exposure);
+  fragColor=vec4(pow(tone.r,u_gamma),pow(tone.g,u_gamma),pow(tone.b,u_gamma),1.0);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
 // ============== PRESETS ==============
 
 const presetsData = {
@@ -2054,11 +3229,87 @@ const presetsData = {
     { name:"BONFIRE", 'fire-height':1.2,'fire-width':1.8,'fire-intensity':3,'fire-timescale':.7,'fire-sparks':120,'fire-smoke':.9,'fire-noise':6 },
     { name:"HELLFIRE", 'fire-height':2,'fire-width':2.8,'fire-intensity':5,'fire-timescale':1.2,'fire-sparks':200,'fire-smoke':1.5,'fire-noise':8 },
     { name:"GHOST FLAME", 'fire-height':1,'fire-width':1.5,'fire-intensity':1.8,'fire-timescale':.4,'fire-sparks':60,'fire-smoke':0,'fire-noise':4 }
+  ],
+  9: [ // Wormhole
+    { name:"COSMIC DRIFT", 'wh-speed':2,'wh-sway':0.8,'wh-twist':1,'wh-starStrength':1,'wh-starDensity':4,'wh-starSize':0.06,'wh-twinkle':0.2,'wh-tunnelRadius':4,'wh-caveNoise':0.5,'wh-wallGlow':0.5,'wh-hueShift':0,'wh-saturation':1.5,'wh-colorCycle':0,'wh-exposure':2,'wh-bloom':0.4,'wh-vignette':0.35,'wh-grain':0.1 },
+    { name:"HYPERDRIVE", 'wh-speed':5,'wh-sway':0.2,'wh-twist':0.5,'wh-starStrength':2,'wh-starDensity':3,'wh-starSize':0.1,'wh-twinkle':0.1,'wh-tunnelRadius':3,'wh-caveNoise':0.2,'wh-wallGlow':0.2,'wh-hueShift':3.5,'wh-saturation':1,'wh-colorCycle':0,'wh-exposure':2.5,'wh-bloom':0.6,'wh-vignette':0.5,'wh-grain':0.05 },
+    { name:"NEBULA DREAM", 'wh-speed':1,'wh-sway':1.5,'wh-twist':1.5,'wh-starStrength':0.5,'wh-starDensity':6,'wh-starSize':0.04,'wh-twinkle':0.3,'wh-tunnelRadius':5,'wh-caveNoise':2,'wh-wallGlow':1,'wh-hueShift':2,'wh-saturation':2,'wh-colorCycle':0.1,'wh-exposure':1.5,'wh-bloom':0.5,'wh-vignette':0.3,'wh-grain':0.15 },
+    { name:"VOID TERROR", 'wh-speed':1.5,'wh-sway':2,'wh-twist':2,'wh-starStrength':0.2,'wh-starDensity':8,'wh-starSize':0.02,'wh-twinkle':0.4,'wh-tunnelRadius':3,'wh-caveNoise':3,'wh-wallGlow':0.1,'wh-hueShift':4,'wh-saturation':0.5,'wh-colorCycle':0,'wh-exposure':1,'wh-bloom':0.2,'wh-vignette':0.8,'wh-grain':0.3 },
+    { name:"PURPLE COSMOS", 'wh-speed':2.5,'wh-sway':0.6,'wh-twist':1.2,'wh-starStrength':0.8,'wh-starDensity':5,'wh-starSize':0.07,'wh-twinkle':0.15,'wh-tunnelRadius':5,'wh-caveNoise':1,'wh-wallGlow':0.3,'wh-hueShift':2.8,'wh-saturation':2,'wh-colorCycle':0,'wh-exposure':2.2,'wh-bloom':0.45,'wh-vignette':0.4,'wh-grain':0.08 },
+    { name:"STAR TUNNEL", 'wh-speed':3,'wh-sway':0.4,'wh-twist':0.8,'wh-starStrength':1.5,'wh-starDensity':3.5,'wh-starSize':0.08,'wh-twinkle':0.25,'wh-tunnelRadius':4.5,'wh-caveNoise':0.3,'wh-wallGlow':0.4,'wh-hueShift':0.5,'wh-saturation':1.2,'wh-colorCycle':0.05,'wh-exposure':1.8,'wh-bloom':0.35,'wh-vignette':0.3,'wh-grain':0.12 },
+    { name:"DEEP SPACE", 'wh-speed':0.8,'wh-sway':1,'wh-twist':1.3,'wh-starStrength':0.3,'wh-starDensity':7,'wh-starSize':0.03,'wh-twinkle':0.35,'wh-tunnelRadius':6,'wh-caveNoise':1.5,'wh-wallGlow':0.8,'wh-hueShift':5,'wh-saturation':0.8,'wh-colorCycle':0,'wh-exposure':1.2,'wh-bloom':0.25,'wh-vignette':0.25,'wh-grain':0.2 },
+    { name:"RAINBOW WARP", 'wh-speed':2.2,'wh-sway':0.7,'wh-twist':1.1,'wh-starStrength':1.2,'wh-starDensity':4.5,'wh-starSize':0.055,'wh-twinkle':0.2,'wh-tunnelRadius':4,'wh-caveNoise':0.6,'wh-wallGlow':0.6,'wh-hueShift':0,'wh-saturation':1.8,'wh-colorCycle':0.2,'wh-exposure':2,'wh-bloom':0.4,'wh-vignette':0.35,'wh-grain':0.1 },
+    { name:"ELECTRIC VOID", 'wh-speed':4,'wh-sway':0.3,'wh-twist':0.6,'wh-starStrength':2.5,'wh-starDensity':2.5,'wh-starSize':0.12,'wh-twinkle':0.08,'wh-tunnelRadius':3.5,'wh-caveNoise':0.15,'wh-wallGlow':0.15,'wh-hueShift':3,'wh-saturation':1.3,'wh-colorCycle':0,'wh-exposure':2.8,'wh-bloom':0.7,'wh-vignette':0.6,'wh-grain':0.04 }
+  ],
+  10: [ // Neon Lines
+    { name:"FLOW", 'nl-speed':1,'nl-lineCount':10,'nl-lineWidth':0.02,'nl-glow':1.5,'nl-waveAmp':0.5,'nl-waveFreq':3,'nl-pulse':2,'nl-trail':0.5,'nl-hue':0.6,'nl-saturation':1,'nl-bgdark':0 },
+    { name:"CYBER RAIN", 'nl-speed':1.5,'nl-lineCount':15,'nl-lineWidth':0.015,'nl-glow':2,'nl-waveAmp':0.3,'nl-waveFreq':5,'nl-pulse':3,'nl-trail':0.8,'nl-hue':0.35,'nl-saturation':1.2,'nl-bgdark':0 },
+    { name:"AURORA", 'nl-speed':0.5,'nl-lineCount':8,'nl-lineWidth':0.03,'nl-glow':1.8,'nl-waveAmp':0.8,'nl-waveFreq':2,'nl-pulse':1,'nl-trail':0.3,'nl-hue':0.45,'nl-saturation':1.5,'nl-bgdark':0 },
+    { name:"NEON STORM", 'nl-speed':2,'nl-lineCount':20,'nl-lineWidth':0.01,'nl-glow':2.5,'nl-waveAmp':0.6,'nl-waveFreq':6,'nl-pulse':4,'nl-trail':1,'nl-hue':0.8,'nl-saturation':0.9,'nl-bgdark':0 },
+    { name:"FIRE TRAILS", 'nl-speed':1.2,'nl-lineCount':12,'nl-lineWidth':0.025,'nl-glow':2,'nl-waveAmp':0.4,'nl-waveFreq':4,'nl-pulse':2.5,'nl-trail':0.6,'nl-hue':0.05,'nl-saturation':1.3,'nl-bgdark':0 },
+    { name:"DEEP BLUE", 'nl-speed':0.8,'nl-lineCount':6,'nl-lineWidth':0.035,'nl-glow':1.2,'nl-waveAmp':0.7,'nl-waveFreq':2.5,'nl-pulse':1.5,'nl-trail':0.4,'nl-hue':0.55,'nl-saturation':0.8,'nl-bgdark':0.3 },
+    { name:"LASER SHOW", 'nl-speed':2.5,'nl-lineCount':18,'nl-lineWidth':0.008,'nl-glow':3,'nl-waveAmp':0.35,'nl-waveFreq':7,'nl-pulse':5,'nl-trail':1.5,'nl-hue':0.9,'nl-saturation':1.1,'nl-bgdark':0 },
+    { name:"GENTLE WAVES", 'nl-speed':0.4,'nl-lineCount':5,'nl-lineWidth':0.04,'nl-glow':1,'nl-waveAmp':1,'nl-waveFreq':1.5,'nl-pulse':0.5,'nl-trail':0.2,'nl-hue':0.7,'nl-saturation':0.7,'nl-bgdark':0.1 },
+    { name:"MATRIX", 'nl-speed':1.8,'nl-lineCount':16,'nl-lineWidth':0.012,'nl-glow':2.2,'nl-waveAmp':0.25,'nl-waveFreq':8,'nl-pulse':3.5,'nl-trail':1.2,'nl-hue':0.33,'nl-saturation':1,'nl-bgdark':0 }
+  ],
+  11: [ // Cyber Waves
+    { name:"OCEAN", 'cw-speed':1,'cw-waveHeight':0.5,'cw-waveScale':1,'cw-gridSize':0.1,'cw-gridGlow':1.5,'cw-hue':0.55,'cw-saturation':1,'cw-perspective':0,'cw-fogDensity':1,'cw-scanlines':0.3,'cw-chromatic':0.5 },
+    { name:"TRON SEA", 'cw-speed':1.5,'cw-waveHeight':0.3,'cw-waveScale':1.5,'cw-gridSize':0.08,'cw-gridGlow':2.5,'cw-hue':0.5,'cw-saturation':0.8,'cw-perspective':0.5,'cw-fogDensity':0.8,'cw-scanlines':0,'cw-chromatic':0 },
+    { name:"FIRE OCEAN", 'cw-speed':1.2,'cw-waveHeight':0.8,'cw-waveScale':0.8,'cw-gridSize':0.12,'cw-gridGlow':2,'cw-hue':0.05,'cw-saturation':1.3,'cw-perspective':-0.5,'cw-fogDensity':1.2,'cw-scanlines':0.4,'cw-chromatic':0.8 },
+    { name:"DEEP VOID", 'cw-speed':0.5,'cw-waveHeight':0.2,'cw-waveScale':2,'cw-gridSize':0.15,'cw-gridGlow':0.8,'cw-hue':0.7,'cw-saturation':0.5,'cw-perspective':1,'cw-fogDensity':2,'cw-scanlines':0,'cw-chromatic':0 },
+    { name:"NEON SURF", 'cw-speed':2,'cw-waveHeight':1,'cw-waveScale':0.6,'cw-gridSize':0.06,'cw-gridGlow':3,'cw-hue':0.85,'cw-saturation':1.5,'cw-perspective':-1,'cw-fogDensity':0.5,'cw-scanlines':0.6,'cw-chromatic':1.2 },
+    { name:"CYBER STORM", 'cw-speed':2.5,'cw-waveHeight':1.5,'cw-waveScale':1.2,'cw-gridSize':0.05,'cw-gridGlow':2.8,'cw-hue':0.6,'cw-saturation':1.2,'cw-perspective':0,'cw-fogDensity':0.6,'cw-scanlines':0.8,'cw-chromatic':1.5 },
+    { name:"CALM WATERS", 'cw-speed':0.3,'cw-waveHeight':0.15,'cw-waveScale':2.5,'cw-gridSize':0.2,'cw-gridGlow':1,'cw-hue':0.52,'cw-saturation':0.6,'cw-perspective':2,'cw-fogDensity':1.5,'cw-scanlines':0.1,'cw-chromatic':0.2 },
+    { name:"MATRIX OCEAN", 'cw-speed':1.8,'cw-waveHeight':0.4,'cw-waveScale':1.8,'cw-gridSize':0.04,'cw-gridGlow':2.2,'cw-hue':0.35,'cw-saturation':1,'cw-perspective':0.3,'cw-fogDensity':0.7,'cw-scanlines':0.5,'cw-chromatic':0.6 },
+    { name:"SUNSET WAVES", 'cw-speed':0.8,'cw-waveHeight':0.6,'cw-waveScale':0.9,'cw-gridSize':0.1,'cw-gridGlow':1.8,'cw-hue':0.08,'cw-saturation':1.4,'cw-perspective':-0.3,'cw-fogDensity':1,'cw-scanlines':0.2,'cw-chromatic':0.4 }
+  ],
+  12: [ // Spiral
+    { name:"COSMIC", 'sp-arms':5,'sp-twist':3,'sp-scale':1,'sp-speed':1,'sp-pulse':0.5,'sp-hue':0.5,'sp-noise':0.3,'sp-vignette':0.4,'sp-sharpness':1,'sp-turbulence':0,'sp-glow':1 },
+    { name:"PLASMA", 'sp-arms':3,'sp-twist':5,'sp-scale':0.8,'sp-speed':1.5,'sp-pulse':0.8,'sp-hue':0.08,'sp-noise':0.6,'sp-vignette':0.3,'sp-sharpness':0.5,'sp-turbulence':0.3,'sp-glow':1 },
+    { name:"VORTEX", 'sp-arms':8,'sp-twist':8,'sp-scale':1.2,'sp-speed':0.8,'sp-pulse':0.2,'sp-hue':0.7,'sp-noise':0.1,'sp-vignette':0.6,'sp-sharpness':2,'sp-turbulence':0,'sp-glow':1 },
+    { name:"NEBULA", 'sp-arms':2,'sp-twist':2,'sp-scale':0.6,'sp-speed':0.3,'sp-pulse':0.9,'sp-hue':0.9,'sp-noise':0.8,'sp-vignette':0.2,'sp-sharpness':0.4,'sp-turbulence':0.5,'sp-glow':1 },
+    { name:"HYPERDRIVE", 'sp-arms':12,'sp-twist':10,'sp-scale':1.5,'sp-speed':2,'sp-pulse':0.1,'sp-hue':0.55,'sp-noise':0.05,'sp-vignette':0.8,'sp-sharpness':4,'sp-turbulence':0,'sp-glow':1 },
+    { name:"DREAMSCAPE", 'sp-arms':2,'sp-twist':1.5,'sp-scale':0.5,'sp-speed':0.15,'sp-pulse':0.95,'sp-hue':0.85,'sp-noise':0.9,'sp-vignette':0.15,'sp-sharpness':0.3,'sp-turbulence':0.7,'sp-glow':1 }
+  ],
+  13: [ // Starfield
+    { name:"COSMIC STREAMS", 'sf-volSteps':18,'sf-stepSize':0.15,'sf-iterations':15,'sf-brightness':0.002,'sf-distFading':0.78,'sf-saturation':0.92,'sf-trailLayers':8,'sf-trailIntensity':0.8,'sf-flowSpeed':0.6,'sf-rotSpeed':0.03,'sf-centerGlow':0.4,'sf-hue':0 },
+    { name:"DEEP SPACE", 'sf-volSteps':25,'sf-stepSize':0.12,'sf-iterations':20,'sf-brightness':0.001,'sf-distFading':0.85,'sf-saturation':0.7,'sf-trailLayers':3,'sf-trailIntensity':0.3,'sf-flowSpeed':0.2,'sf-rotSpeed':0.01,'sf-centerGlow':0.2,'sf-hue':0.5 },
+    { name:"WARP DRIVE", 'sf-volSteps':12,'sf-stepSize':0.25,'sf-iterations':8,'sf-brightness':0.006,'sf-distFading':0.5,'sf-saturation':0.6,'sf-trailLayers':15,'sf-trailIntensity':1.5,'sf-flowSpeed':2,'sf-rotSpeed':0.08,'sf-centerGlow':0.6,'sf-hue':0 },
+    { name:"THE VOID", 'sf-volSteps':30,'sf-stepSize':0.08,'sf-iterations':25,'sf-brightness':0.0008,'sf-distFading':0.95,'sf-saturation':0.3,'sf-trailLayers':0,'sf-trailIntensity':0,'sf-flowSpeed':0.1,'sf-rotSpeed':0.005,'sf-centerGlow':0.1,'sf-hue':0.3 },
+    { name:"SUPERNOVA", 'sf-volSteps':20,'sf-stepSize':0.2,'sf-iterations':18,'sf-brightness':0.008,'sf-distFading':0.6,'sf-saturation':1,'sf-trailLayers':12,'sf-trailIntensity':1.2,'sf-flowSpeed':1.2,'sf-rotSpeed':0.06,'sf-centerGlow':1,'sf-hue':0.7 },
+    { name:"NORTHERN LIGHTS", 'sf-volSteps':22,'sf-stepSize':0.1,'sf-iterations':12,'sf-brightness':0.0015,'sf-distFading':0.88,'sf-saturation':0.85,'sf-trailLayers':15,'sf-trailIntensity':0.6,'sf-flowSpeed':0.25,'sf-rotSpeed':0.015,'sf-centerGlow':0.3,'sf-hue':0.25 }
+  ],
+  14: [ // Fractal
+    { name:"CLASSIC", 'fr-iterations':4,'fr-fractScale':1.5,'fr-ringFreq':8,'fr-ringSpeed':1,'fr-colorSpeed':0.4,'fr-brightness':1.2,'fr-falloff':1.2,'fr-zoom':1 },
+    { name:"HYPNOTIC", 'fr-iterations':6,'fr-fractScale':1.8,'fr-ringFreq':12,'fr-ringSpeed':0.5,'fr-colorSpeed':0.2,'fr-brightness':1.5,'fr-falloff':1,'fr-zoom':0.8 },
+    { name:"COSMIC WEB", 'fr-iterations':8,'fr-fractScale':1.3,'fr-ringFreq':6,'fr-ringSpeed':2,'fr-colorSpeed':0.6,'fr-brightness':2,'fr-falloff':1.5,'fr-zoom':1.2 },
+    { name:"MINIMAL", 'fr-iterations':2,'fr-fractScale':2,'fr-ringFreq':4,'fr-ringSpeed':0.3,'fr-colorSpeed':0.1,'fr-brightness':0.8,'fr-falloff':0.8,'fr-zoom':1.5 },
+    { name:"ELECTRIC STORM", 'fr-iterations':7,'fr-fractScale':1.4,'fr-ringFreq':16,'fr-ringSpeed':3,'fr-colorSpeed':0.8,'fr-brightness':2.5,'fr-falloff':0.6,'fr-zoom':0.6 },
+    { name:"ZEN INFINITY", 'fr-iterations':5,'fr-fractScale':1.6,'fr-ringFreq':5,'fr-ringSpeed':0.15,'fr-colorSpeed':0.05,'fr-brightness':1,'fr-falloff':1.8,'fr-zoom':1.8 }
+  ],
+  15: [ // Maze Lattice (Full version - Darker/High Contrast)
+    { name:"DARK CLASSIC", 'ml-speed':0.25,'ml-tubeWidth':0.2,'ml-patternScale':6,'ml-rotationSpeed':0.25,'ml-edgeWidth':0.034,'ml-reflectivity':0.25,'ml-brightness':1.0,'ml-warmth':0.4,'ml-vignette':0.15,'ml-fogDistance':100,'ml-raySteps':64,'ml-darkness':0.6,'ml-contrast':0.5,'ml-ambient':0.6 },
+    { name:"ABYSS", 'ml-speed':0.15,'ml-tubeWidth':0.18,'ml-patternScale':8,'ml-rotationSpeed':0.12,'ml-edgeWidth':0.02,'ml-reflectivity':0.15,'ml-brightness':0.8,'ml-warmth':0.2,'ml-vignette':0.2,'ml-fogDistance':70,'ml-raySteps':80,'ml-darkness':0.9,'ml-contrast':0.8,'ml-ambient':0.3 },
+    { name:"SHADOW HALLS", 'ml-speed':0.2,'ml-tubeWidth':0.25,'ml-patternScale':5,'ml-rotationSpeed':0.18,'ml-edgeWidth':0.04,'ml-reflectivity':0.35,'ml-brightness':0.9,'ml-warmth':0.35,'ml-vignette':0.18,'ml-fogDistance':90,'ml-raySteps':72,'ml-darkness':0.7,'ml-contrast':0.6,'ml-ambient':0.5 },
+    { name:"VOID WALK", 'ml-speed':0.1,'ml-tubeWidth':0.22,'ml-patternScale':10,'ml-rotationSpeed':0.08,'ml-edgeWidth':0.025,'ml-reflectivity':0.2,'ml-brightness':0.7,'ml-warmth':0.15,'ml-vignette':0.25,'ml-fogDistance':50,'ml-raySteps':96,'ml-darkness':1.0,'ml-contrast':1.0,'ml-ambient':0.2 },
+    { name:"OBSIDIAN TEMPLE", 'ml-speed':0.12,'ml-tubeWidth':0.28,'ml-patternScale':7,'ml-rotationSpeed':0.05,'ml-edgeWidth':0.045,'ml-reflectivity':0.5,'ml-brightness':1.1,'ml-warmth':0.6,'ml-vignette':0.2,'ml-fogDistance':120,'ml-raySteps':72,'ml-darkness':0.5,'ml-contrast':0.7,'ml-ambient':0.7 },
+    { name:"MIDNIGHT RUN", 'ml-speed':0.5,'ml-tubeWidth':0.15,'ml-patternScale':4,'ml-rotationSpeed':0.45,'ml-edgeWidth':0.06,'ml-reflectivity':0.4,'ml-brightness':1.2,'ml-warmth':0.1,'ml-vignette':0.22,'ml-fogDistance':150,'ml-raySteps':56,'ml-darkness':0.65,'ml-contrast':0.55,'ml-ambient':0.55 },
+    { name:"DARK MIRROR", 'ml-speed':0.18,'ml-tubeWidth':0.2,'ml-patternScale':6,'ml-rotationSpeed':0.15,'ml-edgeWidth':0.03,'ml-reflectivity':0.9,'ml-brightness':0.95,'ml-warmth':0.3,'ml-vignette':0.16,'ml-fogDistance':85,'ml-raySteps':88,'ml-darkness':0.75,'ml-contrast':0.65,'ml-ambient':0.45 },
+    { name:"DEEP ABYSS", 'ml-speed':0.06,'ml-tubeWidth':0.16,'ml-patternScale':12,'ml-rotationSpeed':0.02,'ml-edgeWidth':0.015,'ml-reflectivity':0.1,'ml-brightness':0.6,'ml-warmth':0.1,'ml-vignette':0.35,'ml-fogDistance':40,'ml-raySteps':128,'ml-darkness':1.0,'ml-contrast':1.2,'ml-ambient':0.15 },
+    { name:"BRIGHT (LEGACY)", 'ml-speed':0.25,'ml-tubeWidth':0.2,'ml-patternScale':6,'ml-rotationSpeed':0.25,'ml-edgeWidth':0.034,'ml-reflectivity':0.25,'ml-brightness':1.4,'ml-warmth':0.6,'ml-vignette':0.125,'ml-fogDistance':120,'ml-raySteps':64,'ml-darkness':0,'ml-contrast':0,'ml-ambient':1.0 }
+  ],
+  16: [ // Floral Thorns
+    { name:"DEFAULT", 'ft-speed':1,'ft-mirrorScale':0.25,'ft-mirrorOffset':0.5,'ft-rotationDepth':0.2,'ft-rotationTime':0.02,'ft-fractalLayers':6,'ft-glowIntensity':0.75,'ft-fogDepth':0.9,'ft-exposure':50000000,'ft-gamma':0.45 },
+    { name:"NEON BLOOM", 'ft-speed':1.5,'ft-mirrorScale':0.3,'ft-mirrorOffset':0.6,'ft-rotationDepth':0.3,'ft-rotationTime':0.03,'ft-fractalLayers':7,'ft-glowIntensity':1.2,'ft-fogDepth':0.7,'ft-exposure':70000000,'ft-gamma':0.5 },
+    { name:"SLOW DRIFT", 'ft-speed':0.4,'ft-mirrorScale':0.2,'ft-mirrorOffset':0.4,'ft-rotationDepth':0.1,'ft-rotationTime':0.01,'ft-fractalLayers':5,'ft-glowIntensity':0.6,'ft-fogDepth':1.2,'ft-exposure':40000000,'ft-gamma':0.42 },
+    { name:"CHAOS", 'ft-speed':2,'ft-mirrorScale':0.35,'ft-mirrorOffset':0.7,'ft-rotationDepth':0.4,'ft-rotationTime':0.05,'ft-fractalLayers':8,'ft-glowIntensity':1,'ft-fogDepth':0.6,'ft-exposure':60000000,'ft-gamma':0.48 },
+    { name:"CYBER LOTUS", 'ft-speed':0.8,'ft-mirrorScale':0.4,'ft-mirrorOffset':0.3,'ft-rotationDepth':0.15,'ft-rotationTime':0.008,'ft-fractalLayers':8,'ft-glowIntensity':0.9,'ft-fogDepth':1,'ft-exposure':30000000,'ft-gamma':0.4 },
+    { name:"FEVER DREAM", 'ft-speed':2.5,'ft-mirrorScale':0.18,'ft-mirrorOffset':0.8,'ft-rotationDepth':0.5,'ft-rotationTime':0.07,'ft-fractalLayers':7,'ft-glowIntensity':1.5,'ft-fogDepth':0.5,'ft-exposure':90000000,'ft-gamma':0.55 }
   ]
 };
 
-const shaderNames = ["PLASMA VORTEX", "COSMIC MANDALA", "DARK TRANSIT", "NEON GRID", "ELECTRIC ARCS", "NEON SPOKES", "CRYSTAL LATTICE", "RAINBOW NEBULA", "INFERNO FIRE"];
-const shaderSources = [plasmaVortexShader, cosmicMandalaShader, darkTransitShader, neonGridShader, electricArcsShader, neonSpokesShader, crystalLatticeShader, rainbowNebulaShader, infernoFireShader];
+const shaderNames = ["PLASMA VORTEX", "COSMIC MANDALA", "DARK TRANSIT", "NEON GRID", "ELECTRIC ARCS", "NEON SPOKES", "CRYSTAL LATTICE", "RAINBOW NEBULA", "INFERNO FIRE", "WORMHOLE", "NEON LINES", "CYBER WAVES", "SPIRAL", "STARFIELD", "FRACTAL", "MAZE LATTICE", "FLORAL THORNS"];
+const shaderSources = [plasmaVortexShader, cosmicMandalaShader, darkTransitShader, neonGridShader, electricArcsShader, neonSpokesShader, crystalLatticeShader, rainbowNebulaShader, infernoFireShader, wormholeShader, neonLinesShader, cyberWavesShader, spiralShader, starfieldShader, fractalShader, mazeLatticeShader, floralThornsShader];
 
 // ============== WEBGL SETUP ==============
 
@@ -2148,7 +3399,15 @@ const sliderConfigs = {
   5: ['ns-speed','ns-zoom','ns-iterations','ns-complexity','ns-stepsize','ns-saturation','ns-exposure'],
   6: ['cl-speed','cl-pathcurve','cl-stepscale','cl-swirl','cl-swirlfreq','cl-shapesize','cl-shapemod','cl-glow','cl-colorr','cl-colorg','cl-colorb','cl-exposure'],
   7: ['rn-speed','rn-turbulence','rn-iterations','rn-scale','rn-detail','rn-saturation','rn-brightness','rn-hue','rn-exposure'],
-  8: ['fire-height','fire-width','fire-intensity','fire-timescale','fire-sparks','fire-smoke','fire-noise']
+  8: ['fire-height','fire-width','fire-intensity','fire-timescale','fire-sparks','fire-smoke','fire-noise'],
+  9: ['wh-speed','wh-sway','wh-twist','wh-starStrength','wh-starDensity','wh-starSize','wh-twinkle','wh-tunnelRadius','wh-caveNoise','wh-wallGlow','wh-hueShift','wh-saturation','wh-colorCycle','wh-exposure','wh-bloom','wh-vignette','wh-grain'],
+  10: ['nl-speed','nl-lineCount','nl-lineWidth','nl-glow','nl-waveAmp','nl-waveFreq','nl-pulse','nl-trail','nl-hue','nl-saturation','nl-bgdark'],
+  11: ['cw-speed','cw-waveHeight','cw-waveScale','cw-gridSize','cw-gridGlow','cw-hue','cw-saturation','cw-perspective','cw-fogDensity','cw-scanlines','cw-chromatic'],
+  12: ['sp-arms','sp-twist','sp-scale','sp-speed','sp-pulse','sp-hue','sp-noise','sp-vignette','sp-sharpness','sp-turbulence','sp-glow'],
+  13: ['sf-volSteps','sf-stepSize','sf-iterations','sf-brightness','sf-distFading','sf-saturation','sf-trailLayers','sf-trailIntensity','sf-flowSpeed','sf-rotSpeed','sf-centerGlow','sf-hue'],
+  14: ['fr-iterations','fr-fractScale','fr-ringFreq','fr-ringSpeed','fr-colorSpeed','fr-brightness','fr-falloff','fr-zoom'],
+  15: ['ml-speed','ml-tubeWidth','ml-patternScale','ml-rotationSpeed','ml-edgeWidth','ml-reflectivity','ml-brightness','ml-warmth','ml-vignette','ml-fogDistance','ml-raySteps','ml-darkness','ml-contrast','ml-ambient'],
+  16: ['ft-speed','ft-mirrorScale','ft-mirrorOffset','ft-rotationDepth','ft-rotationTime','ft-fractalLayers','ft-glowIntensity','ft-fogDepth','ft-exposure','ft-gamma']
 };
 
 const uniformNames = {
@@ -2177,7 +3436,37 @@ const uniformNames = {
   'rn-speed':'u_speed','rn-turbulence':'u_turbulence','rn-iterations':'u_iterations','rn-scale':'u_scale',
   'rn-detail':'u_detail','rn-saturation':'u_saturation','rn-brightness':'u_brightness','rn-hue':'u_hue','rn-exposure':'u_exposure',
   'fire-height':'u_flameHeight','fire-width':'u_flameWidth','fire-intensity':'u_flameIntensity',
-  'fire-timescale':'u_timeScale','fire-sparks':'u_sparkCount','fire-smoke':'u_smokeOpacity','fire-noise':'u_noiseOctaves'
+  'fire-timescale':'u_timeScale','fire-sparks':'u_sparkCount','fire-smoke':'u_smokeOpacity','fire-noise':'u_noiseOctaves',
+  'wh-speed':'u_speed','wh-sway':'u_sway','wh-twist':'u_twist','wh-starStrength':'u_starStrength',
+  'wh-starDensity':'u_starDensity','wh-starSize':'u_starSize','wh-twinkle':'u_twinkle',
+  'wh-tunnelRadius':'u_tunnelRadius','wh-caveNoise':'u_caveNoise','wh-wallGlow':'u_wallGlow',
+  'wh-hueShift':'u_hueShift','wh-saturation':'u_saturation','wh-colorCycle':'u_colorCycle',
+  'wh-exposure':'u_exposure','wh-bloom':'u_bloom','wh-vignette':'u_vignette','wh-grain':'u_grain',
+  'nl-speed':'u_speed','nl-lineCount':'u_lineCount','nl-lineWidth':'u_lineWidth','nl-glow':'u_glow',
+  'nl-waveAmp':'u_waveAmp','nl-waveFreq':'u_waveFreq','nl-pulse':'u_pulse','nl-trail':'u_trail',
+  'nl-hue':'u_hue','nl-saturation':'u_saturation','nl-bgdark':'u_bgdark',
+  'cw-speed':'u_speed','cw-waveHeight':'u_waveHeight','cw-waveScale':'u_waveScale',
+  'cw-gridSize':'u_gridSize','cw-gridGlow':'u_gridGlow','cw-hue':'u_hue','cw-saturation':'u_saturation',
+  'cw-perspective':'u_perspective','cw-fogDensity':'u_fogDensity','cw-scanlines':'u_scanlines','cw-chromatic':'u_chromatic',
+  // Spiral
+  'sp-arms':'u_arms','sp-twist':'u_twist','sp-scale':'u_scale','sp-speed':'u_speed','sp-pulse':'u_pulse',
+  'sp-hue':'u_hue','sp-noise':'u_noise','sp-vignette':'u_vignette','sp-sharpness':'u_sharpness','sp-turbulence':'u_turbulence','sp-glow':'u_glow',
+  // Starfield
+  'sf-volSteps':'u_volSteps','sf-stepSize':'u_stepSize','sf-iterations':'u_iterations','sf-brightness':'u_brightness',
+  'sf-distFading':'u_distFading','sf-saturation':'u_saturation','sf-trailLayers':'u_trailLayers','sf-trailIntensity':'u_trailIntensity',
+  'sf-flowSpeed':'u_flowSpeed','sf-rotSpeed':'u_rotSpeed','sf-centerGlow':'u_centerGlow','sf-hue':'u_hue',
+  // Fractal
+  'fr-iterations':'u_iterations','fr-fractScale':'u_fractScale','fr-ringFreq':'u_ringFreq','fr-ringSpeed':'u_ringSpeed',
+  'fr-colorSpeed':'u_colorSpeed','fr-brightness':'u_brightness','fr-falloff':'u_falloff','fr-zoom':'u_zoom',
+  // Maze Lattice
+  'ml-speed':'u_speed','ml-tubeWidth':'u_tubeWidth','ml-patternScale':'u_patternScale','ml-rotationSpeed':'u_rotationSpeed',
+  'ml-edgeWidth':'u_edgeWidth','ml-reflectivity':'u_reflectivity','ml-brightness':'u_brightness','ml-warmth':'u_warmth',
+  'ml-vignette':'u_vignette','ml-fogDistance':'u_fogDistance','ml-raySteps':'u_raySteps',
+  'ml-darkness':'u_darkness','ml-contrast':'u_contrast','ml-ambient':'u_ambient',
+  // Floral Thorns
+  'ft-speed':'u_speed','ft-mirrorScale':'u_mirrorScale','ft-mirrorOffset':'u_mirrorOffset','ft-rotationDepth':'u_rotationDepth',
+  'ft-rotationTime':'u_rotationTime','ft-fractalLayers':'u_fractalLayers','ft-glowIntensity':'u_glowIntensity',
+  'ft-fogDepth':'u_fogDepth','ft-exposure':'u_exposure','ft-gamma':'u_gamma'
 };
 
 function updateSlider(id) {
@@ -2189,8 +3478,14 @@ function updateSlider(id) {
   const t = (v - parseFloat(el.min)) / (parseFloat(el.max) - parseFloat(el.min));
   if (fill) fill.style.width = (t * 100) + '%';
   if (val) {
-    if (id.includes('exposure') || id.includes('iterations') || id.includes('sparks') || id.includes('noise') || id.includes('symmetry') || id.includes('layers') || id.includes('arms')) {
+    if (id.includes('iterations') || id.includes('sparks') || id.includes('symmetry') || id.includes('layers') || id.includes('arms') || id.includes('volSteps') || id.includes('trailLayers') || id.includes('fogDistance') || id.includes('fractalLayers') || id.includes('ringFreq') || id.includes('raySteps')) {
       val.textContent = Math.round(v);
+    } else if (id === 'ft-exposure') {
+      val.textContent = v.toExponential(1);
+    } else if (id === 'sf-brightness') {
+      val.textContent = v.toFixed(4);
+    } else if (id === 'sf-rotSpeed') {
+      val.textContent = v.toFixed(3);
     } else {
       val.textContent = v.toFixed(2);
     }
@@ -2207,12 +3502,12 @@ Object.values(sliderConfigs).flat().forEach(id => {
 
 // ============== PRESET SYSTEM ==============
 
-let currentPresetIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+let currentPresetIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const presetNameEl = document.getElementById('current-preset');
 const shaderTypeEl = document.getElementById('shader-type');
 
 function buildPresetButtons() {
-  for (let s = 0; s < 9; s++) {
+  for (let s = 0; s < 17; s++) {
     const container = document.getElementById('presets-' + s);
     if (!container) continue;
     container.innerHTML = '';
@@ -2251,24 +3546,24 @@ function applyPreset(shader, index) {
 
 // ============== SHADER SWITCHING ==============
 
-const shaderBtns = document.querySelectorAll('.shader-btn');
+const shaderDropdown = document.getElementById('shader-dropdown');
 const controlSections = document.querySelectorAll('.controls-section');
 
 function switchShader(index) {
   currentShader = index;
-  
-  shaderBtns.forEach((btn, i) => btn.classList.toggle('active', i === index));
+
+  shaderDropdown.value = index;
   controlSections.forEach((sec, i) => sec.classList.toggle('active', i === index));
-  
+
   shaderTypeEl.textContent = shaderNames[index];
   presetNameEl.textContent = presetsData[index][currentPresetIndex[index]].name;
-  
+
   gl.useProgram(programs[index]);
   setupAttributes(programs[index]);
 }
 
-shaderBtns.forEach((btn, idx) => {
-  btn.addEventListener('click', () => switchShader(idx));
+shaderDropdown.addEventListener('change', (e) => {
+  switchShader(parseInt(e.target.value));
 });
 
 // ============== EXPORT ==============
