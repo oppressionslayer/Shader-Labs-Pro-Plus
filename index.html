@@ -170,6 +170,26 @@
       padding:10px;
       font-size:14px;
     }
+    .randomize-btn {
+      margin-top:10px;
+      width:100%;
+      padding:10px;
+      background:linear-gradient(135deg,#ff6b9d,#c44dff);
+      border:none;
+      border-radius:8px;
+      font-family:'Rajdhani',sans-serif;
+      font-size:12px;
+      font-weight:700;
+      color:#fff;
+      cursor:pointer;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      transition:all 0.2s;
+    }
+    .randomize-btn:hover {
+      box-shadow:0 0 25px rgba(196,77,255,0.6);
+      transform:translateY(-1px);
+    }
     .export-btn {
       margin-top:10px;
       width:100%;
@@ -471,6 +491,11 @@
         padding:10px 36px 10px 12px;
         font-size:13px;
       }
+      .randomize-btn {
+        margin-top:8px;
+        padding:8px;
+        font-size:10px;
+      }
       .export-btn {
         margin-top:8px;
         padding:8px;
@@ -618,6 +643,7 @@
           <option value="16">Floral Thorns</option>
         </select>
       </div>
+      <button class="randomize-btn" id="randomize-btn">Randomize Shader</button>
       <button class="export-btn" id="export-btn">Export to Shadertoy</button>
     </div>
     
@@ -3658,6 +3684,45 @@ copyBtn.addEventListener('click', () => {
     }, 2000);
   });
 });
+
+// ============== RANDOMIZE ==============
+
+function randomizeShader() {
+  const sliders = sliderConfigs[currentShader];
+  if (!sliders) return;
+
+  sliders.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const min = parseFloat(el.min);
+    const max = parseFloat(el.max);
+    const step = parseFloat(el.step) || 0.01;
+
+    // Generate random value within range
+    let randomVal = min + Math.random() * (max - min);
+
+    // Snap to step
+    randomVal = Math.round(randomVal / step) * step;
+
+    // Clamp to range (in case of floating point errors)
+    randomVal = Math.max(min, Math.min(max, randomVal));
+
+    el.value = randomVal;
+    updateSlider(id);
+  });
+
+  // Clear active preset since we're now using random values
+  const container = document.getElementById('presets-' + currentShader);
+  if (container) {
+    container.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+  }
+  presetNameEl.textContent = 'Random';
+}
+
+document.getElementById('randomize-btn').addEventListener('click', randomizeShader);
 
 // ============== RENDER ==============
 
