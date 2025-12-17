@@ -3226,6 +3226,7 @@ void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
 
 // ★ Cosmic Distortion - Logarithmic distortion with grid and waves
 // Auto-randomizes with smooth transitions (7s interval, 2s transition)
+// u_autoRandomize blends between preset values (0.0) and auto-random (1.0)
 const cosmicDistortionShader = `
 precision highp float;
 uniform vec2 iResolution;
@@ -3233,6 +3234,7 @@ uniform float iTime;
 uniform float u_speed, u_gridScale, u_gridThreshold, u_distortion;
 uniform float u_glowIntensity, u_ringFreq, u_angularFreq, u_hue;
 uniform float u_saturation, u_brightness, u_orbitSpeed;
+uniform float u_autoRandomize;
 
 float hash(float n) {
     return fract(sin(n * 78.233) * 43758.5453123);
@@ -3250,7 +3252,7 @@ vec3 hsv2rgb(vec3 c) {
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-float getRandomParam(float paramId, float baseVal, float minVal, float range) {
+float getRandomParam(float paramId, float minVal, float range) {
     float changeInterval = 7.0;
     float transitionDuration = 2.0;
 
@@ -3270,18 +3272,20 @@ float getRandomParam(float paramId, float baseVal, float minVal, float range) {
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    // Auto-randomized parameters with smooth transitions
-    float CD_SPEED         = getRandomParam(0.0, u_speed, 0.15, 0.45);
-    float CD_GRIDSCALE     = getRandomParam(1.0, u_gridScale, 3.0, 12.0);
-    float CD_GRIDTHRESHOLD = getRandomParam(2.0, u_gridThreshold, 0.1, 0.35);
-    float CD_DISTORTION    = getRandomParam(3.0, u_distortion, 0.2, 0.8);
-    float CD_GLOWINTENSITY = getRandomParam(4.0, u_glowIntensity, 2.0, 5.0);
-    float CD_RINGFREQ      = getRandomParam(5.0, u_ringFreq, 8.0, 20.0);
-    float CD_ANGULARFREQ   = getRandomParam(6.0, u_angularFreq, 5.0, 12.0);
-    float CD_ORBITSPEED    = getRandomParam(7.0, u_orbitSpeed, 0.1, 0.3);
-    float CD_HUE           = getRandomParam(8.0, u_hue, 0.0, 1.0);
-    float CD_SATURATION    = getRandomParam(9.0, u_saturation, 0.6, 0.6);
-    float CD_BRIGHTNESS    = getRandomParam(10.0, u_brightness, 1.0, 1.8);
+    // Blend between preset values and auto-randomized values
+    float autoRand = u_autoRandomize;
+
+    float CD_SPEED         = mix(u_speed, getRandomParam(0.0, 0.15, 0.45), autoRand);
+    float CD_GRIDSCALE     = mix(u_gridScale, getRandomParam(1.0, 3.0, 12.0), autoRand);
+    float CD_GRIDTHRESHOLD = mix(u_gridThreshold, getRandomParam(2.0, 0.1, 0.35), autoRand);
+    float CD_DISTORTION    = mix(u_distortion, getRandomParam(3.0, 0.2, 0.8), autoRand);
+    float CD_GLOWINTENSITY = mix(u_glowIntensity, getRandomParam(4.0, 2.0, 5.0), autoRand);
+    float CD_RINGFREQ      = mix(u_ringFreq, getRandomParam(5.0, 8.0, 20.0), autoRand);
+    float CD_ANGULARFREQ   = mix(u_angularFreq, getRandomParam(6.0, 5.0, 12.0), autoRand);
+    float CD_ORBITSPEED    = mix(u_orbitSpeed, getRandomParam(7.0, 0.1, 0.3), autoRand);
+    float CD_HUE           = mix(u_hue, getRandomParam(8.0, 0.0, 1.0), autoRand);
+    float CD_SATURATION    = mix(u_saturation, getRandomParam(9.0, 0.6, 0.6), autoRand);
+    float CD_BRIGHTNESS    = mix(u_brightness, getRandomParam(10.0, 1.0, 1.8), autoRand);
 
     vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
     float t = iTime * CD_SPEED;
@@ -3592,6 +3596,41 @@ document.addEventListener('keydown', e => {
   if (e.code === 'Space') { isPaused = !isPaused; e.preventDefault(); }
 });
 
+// ============== COSMIC DISTORTION AUTO-RANDOMIZE STATE ==============
+// Manages blend between preset mode (0.0) and auto-randomize mode (1.0)
+let cdAutoRandomize = 1.0; // Start in auto-randomize mode (default)
+let cdAutoRandomizeTarget = 1.0;
+let cdTransitionStart = 0;
+let cdTransitionDuration = 2.0; // 2 second transitions
+
+function updateCdAutoRandomize(now) {
+  if (cdAutoRandomize !== cdAutoRandomizeTarget) {
+    const elapsed = (now - cdTransitionStart) / 1000;
+    const t = Math.min(elapsed / cdTransitionDuration, 1.0);
+    // Smooth easing
+    const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    const startVal = cdAutoRandomizeTarget === 1.0 ? 0.0 : 1.0;
+    cdAutoRandomize = startVal + (cdAutoRandomizeTarget - startVal) * eased;
+    if (t >= 1.0) {
+      cdAutoRandomize = cdAutoRandomizeTarget;
+    }
+  }
+}
+
+function transitionToAutoRandomize() {
+  if (cdAutoRandomizeTarget !== 1.0) {
+    cdAutoRandomizeTarget = 1.0;
+    cdTransitionStart = performance.now();
+  }
+}
+
+function transitionToPreset() {
+  if (cdAutoRandomizeTarget !== 0.0) {
+    cdAutoRandomizeTarget = 0.0;
+    cdTransitionStart = performance.now();
+  }
+}
+
 // ============== SLIDER SYSTEM ==============
 
 const sliderConfigs = {
@@ -3733,7 +3772,12 @@ function buildPresetButtons() {
 function applyPreset(shader, index) {
   const preset = presetsData[shader][index];
   currentPresetIndex[shader] = index;
-  
+
+  // For Cosmic Distortion, transition from auto-randomize to preset mode
+  if (shader === 17) {
+    transitionToPreset();
+  }
+
   Object.keys(preset).forEach(key => {
     if (key === 'name') return;
     const el = document.getElementById(key);
@@ -3742,14 +3786,14 @@ function applyPreset(shader, index) {
       updateSlider(key);
     }
   });
-  
+
   const container = document.getElementById('presets-' + shader);
   if (container) {
     container.querySelectorAll('.preset-btn').forEach((btn, i) => {
       btn.classList.toggle('active', i === index);
     });
   }
-  
+
   presetNameEl.textContent = preset.name;
 }
 
@@ -3995,6 +4039,20 @@ function randomizeShader() {
   const sliders = sliderConfigs[currentShader];
   if (!sliders) return;
 
+  // For Cosmic Distortion, transition to auto-randomize mode
+  if (currentShader === 17) {
+    transitionToAutoRandomize();
+    // Clear active preset since we're switching to auto-randomize mode
+    const container = document.getElementById('presets-' + currentShader);
+    if (container) {
+      container.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+    }
+    presetNameEl.textContent = 'Auto-Random';
+    return; // Don't randomize sliders - shader does it internally
+  }
+
   sliders.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -4039,19 +4097,27 @@ function render(now) {
   const dt = (now - lastTime) * 0.001;
   lastTime = now;
   if (!isPaused) accTime += dt;
-  
+
+  // Update Cosmic Distortion auto-randomize transition
+  updateCdAutoRandomize(now);
+
   resize();
-  
+
   const prog = programs[currentShader];
   const unis = uniformsMap[currentShader];
-  
+
   gl.useProgram(prog);
   setupAttributes(prog);
-  
+
   if (unis.iResolution) gl.uniform2f(unis.iResolution, canvas.width, canvas.height);
   if (unis.iTime) gl.uniform1f(unis.iTime, accTime);
   if (unis.iMouse) gl.uniform4f(unis.iMouse, mouse.x, mouse.y, mouse.down ? 1 : 0, 0);
-  
+
+  // Pass auto-randomize blend value for Cosmic Distortion (shader 17)
+  if (currentShader === 17 && unis.u_autoRandomize) {
+    gl.uniform1f(unis.u_autoRandomize, cdAutoRandomize);
+  }
+
   sliderConfigs[currentShader].forEach(id => {
     const el = document.getElementById(id);
     const uniName = uniformNames[id];
@@ -4059,7 +4125,7 @@ function render(now) {
       gl.uniform1f(unis[uniName], parseFloat(el.value));
     }
   });
-  
+
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   
   fpsAccum += 1 / Math.max(dt, 0.001);
