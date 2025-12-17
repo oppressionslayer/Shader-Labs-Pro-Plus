@@ -634,7 +634,7 @@
           <option value="7">Rainbow Nebula</option>
           <option value="8">Inferno Fire</option>
           <option value="9">Wormhole</option>
-          <option value="10">Neon Lines</option>
+          <option value="10" selected>Neon Lines</option>
           <option value="11">Cyber Waves</option>
           <option value="12">Spiral</option>
           <option value="13">Starfield</option>
@@ -3354,7 +3354,7 @@ function compileShader(src, type) {
   return s;
 }
 
-let currentShader = 0;
+let currentShader = 10;
 let programs = [];
 let uniformsMap = [];
 
@@ -3772,7 +3772,7 @@ function render(now) {
 // ============== INIT ==============
 
 buildPresetButtons();
-switchShader(0);
+switchShader(10);
 applyPreset(0, 0);
 requestAnimationFrame(render);
 
