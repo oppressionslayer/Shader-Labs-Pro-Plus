@@ -3225,6 +3225,7 @@ void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
 `;
 
 // ★ Cosmic Distortion - Logarithmic distortion with grid and waves
+// Auto-randomizes with smooth transitions (7s interval, 2s transition)
 const cosmicDistortionShader = `
 precision highp float;
 uniform vec2 iResolution;
@@ -3232,6 +3233,10 @@ uniform float iTime;
 uniform float u_speed, u_gridScale, u_gridThreshold, u_distortion;
 uniform float u_glowIntensity, u_ringFreq, u_angularFreq, u_hue;
 uniform float u_saturation, u_brightness, u_orbitSpeed;
+
+float hash(float n) {
+    return fract(sin(n * 78.233) * 43758.5453123);
+}
 
 float seg(in vec2 p, in vec2 a, in vec2 b) {
     vec2 pa = p-a, ba = b-a;
@@ -3245,43 +3250,73 @@ vec3 hsv2rgb(vec3 c) {
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
+float getRandomParam(float paramId, float baseVal, float minVal, float range) {
+    float changeInterval = 7.0;
+    float transitionDuration = 2.0;
+
+    float epoch = floor(iTime / changeInterval);
+    float timeInEpoch = fract(iTime / changeInterval) * changeInterval;
+    float transition = smoothstep(0.0, transitionDuration, timeInEpoch);
+
+    float currSeed = epoch * 137.0;
+    float nextSeed = (epoch + 1.0) * 137.0;
+
+    float prevVal = hash(currSeed + paramId * 17.31);
+    float currVal = hash(nextSeed + paramId * 17.31);
+    float interpolated = mix(prevVal, currVal, transition);
+
+    return minVal + interpolated * range;
+}
+
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
+    // Auto-randomized parameters with smooth transitions
+    float CD_SPEED         = getRandomParam(0.0, u_speed, 0.15, 0.45);
+    float CD_GRIDSCALE     = getRandomParam(1.0, u_gridScale, 3.0, 12.0);
+    float CD_GRIDTHRESHOLD = getRandomParam(2.0, u_gridThreshold, 0.1, 0.35);
+    float CD_DISTORTION    = getRandomParam(3.0, u_distortion, 0.2, 0.8);
+    float CD_GLOWINTENSITY = getRandomParam(4.0, u_glowIntensity, 2.0, 5.0);
+    float CD_RINGFREQ      = getRandomParam(5.0, u_ringFreq, 8.0, 20.0);
+    float CD_ANGULARFREQ   = getRandomParam(6.0, u_angularFreq, 5.0, 12.0);
+    float CD_ORBITSPEED    = getRandomParam(7.0, u_orbitSpeed, 0.1, 0.3);
+    float CD_HUE           = getRandomParam(8.0, u_hue, 0.0, 1.0);
+    float CD_SATURATION    = getRandomParam(9.0, u_saturation, 0.6, 0.6);
+    float CD_BRIGHTNESS    = getRandomParam(10.0, u_brightness, 1.0, 1.8);
+
     vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
-    float t = iTime * u_speed;
+    float t = iTime * CD_SPEED;
     float a = atan(uv.y, uv.x);
-    vec2 p = cos(a + t) * vec2(cos(0.5 * t * u_orbitSpeed), sin(0.3 * t * u_orbitSpeed));
-    vec2 q = (cos(t)) * vec2(cos(t), sin(t));
+    vec2 p = cos(a + t) * vec2(cos(0.5 * t * CD_ORBITSPEED), sin(0.3 * t * CD_ORBITSPEED));
 
     float d1 = length(uv - p);
-    float d2 = length(uv - 0.);
+    float d2 = length(uv);
 
-    vec2 uv2 = 2. * cos(log(length(uv)) * u_distortion - 0.5 * t + log(vec2(d1,d2)/(d1+d2)));
+    vec2 uv2 = 2. * cos(log(length(uv)) * CD_DISTORTION - 0.5 * t + log(vec2(d1,d2)/(d1+d2)));
 
-    vec2 fpos = fract(u_gridScale * uv2) - 0.5;
+    vec2 fpos = fract(CD_GRIDSCALE * uv2) - 0.5;
     float d = max(abs(fpos.x), abs(fpos.y));
     float k = 5. / iResolution.y;
-    float s = smoothstep(-k, k, u_gridThreshold - d);
+    float s = smoothstep(-k, k, CD_GRIDTHRESHOLD - d);
 
     // Base color with hue shift
-    vec3 baseCol = hsv2rgb(vec3(u_hue, u_saturation, 1.0));
+    vec3 baseCol = hsv2rgb(vec3(CD_HUE, CD_SATURATION, 1.0));
     vec3 col = vec3(s * baseCol.r, s * baseCol.g * 0.5, (0.1-0.1 * s) * baseCol.b);
 
     // Glow around orbit point
-    vec3 glowCol = hsv2rgb(vec3(u_hue + 0.1, u_saturation, 1.0));
-    float glowArg = -u_glowIntensity * (length(uv - p) + length(uv));
+    vec3 glowCol = hsv2rgb(vec3(CD_HUE + 0.1, CD_SATURATION, 1.0));
+    float glowArg = -CD_GLOWINTENSITY * (length(uv - p) + length(uv));
     float coshVal = (exp(glowArg) + exp(-glowArg)) * 0.5;
     col += (1.0 / coshVal) * glowCol;
 
     // Ring waves
-    float c = cos(u_ringFreq * length(uv2) + 4. * t);
-    vec3 ringCol = hsv2rgb(vec3(u_hue + 0.3, u_saturation * 0.8, 1.0));
+    float c = cos(CD_RINGFREQ * length(uv2) + 4. * t);
+    vec3 ringCol = hsv2rgb(vec3(CD_HUE + 0.3, CD_SATURATION * 0.8, 1.0));
     col += (0.5 + 0.5 * c) * ringCol *
-           exp(-9. * abs(cos(u_angularFreq * a + t) * uv.x
-                       + sin(u_angularFreq * a + t) * uv.y
+           exp(-9. * abs(cos(CD_ANGULARFREQ * a + t) * uv.x
+                       + sin(CD_ANGULARFREQ * a + t) * uv.y
                        + 0.1 * c));
 
-    col *= u_brightness;
+    col *= CD_BRIGHTNESS;
     fragColor = vec4(col,1.0);
 }
 void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
@@ -3746,7 +3781,12 @@ function generateExportCode() {
   const idx = currentShader;
   const name = shaderNames[idx];
   const preset = presetsData[idx][currentPresetIndex[idx]].name;
-  
+
+  // Special export for Cosmic Distortion with Buffer A randomization
+  if (idx === 17) {
+    return generateCosmicDistortionExport();
+  }
+
   let code = `// ${name} - Exported from Shader Lab Pro 2.6.0
 // Preset: ${preset}
 // These presets were created using Shader Lab Pro
@@ -3757,7 +3797,7 @@ function generateExportCode() {
 // Ready to paste into Shadertoy!
 
 `;
-  
+
   // Add #defines for all current slider values
   sliderConfigs[idx].forEach(id => {
     const el = document.getElementById(id);
@@ -3767,16 +3807,16 @@ function generateExportCode() {
       code += `#define ${defName} ${v.toFixed(4)}\n`;
     }
   });
-  
+
   code += '\n';
-  
+
   // Get the shader source and convert for Shadertoy
   let shaderCode = shaderSources[idx];
-  
+
   // Remove the WebGL wrapper parts
   shaderCode = shaderCode.replace(/precision highp float;\n?/g, '');
   shaderCode = shaderCode.replace(/void main\(\) \{ vec4 O; mainImage\(O, gl_FragCoord\.xy\); gl_FragColor = O; \}\n?/g, '');
-  
+
   // Build uniform to define mapping, sorted by length (longest first to avoid partial replacements)
   const replacements = [];
   sliderConfigs[idx].forEach(id => {
@@ -3784,29 +3824,145 @@ function generateExportCode() {
     const defName = id.toUpperCase().replace(/-/g, '_');
     replacements.push({ uni: uniName, def: defName });
   });
-  
+
   // Sort by uniform name length descending (replace longer names first)
   replacements.sort((a, b) => b.uni.length - a.uni.length);
-  
+
   // Remove uniform lines
   shaderCode = shaderCode.replace(/uniform float [^;]+;\n?/g, '');
   shaderCode = shaderCode.replace(/uniform vec2 iResolution;\n?/g, '');
   shaderCode = shaderCode.replace(/uniform vec4 iMouse;\n?/g, '');
   shaderCode = shaderCode.replace(/uniform float iTime;\n?/g, '');
-  
+
   // Replace uniform usages with #define names using word boundaries
   replacements.forEach(({ uni, def }) => {
     const regex = new RegExp('\\b' + uni.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'g');
     shaderCode = shaderCode.replace(regex, def);
   });
-  
+
   // Clean up extra newlines
   shaderCode = shaderCode.replace(/\n{3,}/g, '\n\n');
   shaderCode = shaderCode.trim();
-  
+
   code += shaderCode;
-  
+
   return code;
+}
+
+// Special export for Cosmic Distortion with Buffer A transition technique
+function generateCosmicDistortionExport() {
+  const bufferA = `// COSMIC DISTORTION - Buffer A
+// Auto-randomizes with smooth transitions (7s interval, 2s transition)
+// Exported from Shader Lab Pro 2.6.0
+//
+// Visit this site to edit this code and its presets:
+// https://shader-labs-pro-plus.netlify.app
+//
+// SETUP: Create Buffer A with this code, then set iChannel0 -> Buffer A in Image tab
+
+float hash(float n) {
+    return fract(sin(n * 78.233) * 43758.5453123);
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    float changeInterval = 7.0;
+    float transitionDuration = 2.0;
+
+    float epoch = floor(iTime / changeInterval);
+    float timeInEpoch = fract(iTime / changeInterval) * changeInterval;
+    float transition = smoothstep(0.0, transitionDuration, timeInEpoch);
+
+    float currSeed = epoch * 137.0;
+    float nextSeed = (epoch + 1.0) * 137.0;
+
+    int id = int(fragCoord.x);
+
+    if (fragCoord.y < 1.0 && id < 11) {
+        float prevVal = hash(currSeed + float(id) * 17.31);
+        float currVal = hash(nextSeed + float(id) * 17.31);
+        float interpolated = mix(prevVal, currVal, transition);
+        fragColor = vec4(interpolated, 0.0, 0.0, 1.0);
+    } else {
+        fragColor = vec4(0.0);
+    }
+}`;
+
+  const imageCode = `// COSMIC DISTORTION - Image (Main)
+// Auto-randomizes with smooth transitions (7s interval, 2s transition)
+// Exported from Shader Lab Pro 2.6.0
+//
+// Visit this site to edit this code and its presets:
+// https://shader-labs-pro-plus.netlify.app
+//
+// SETUP: Set iChannel0 -> Buffer A
+
+float seg(in vec2 p, in vec2 a, in vec2 b) {
+    vec2 pa = p-a, ba = b-a;
+    float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+    return length( pa - ba*h );
+}
+
+vec3 hsv2rgb(vec3 c) {
+    vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    // Read interpolated random values from Buffer A
+    float CD_SPEED         = 0.15 + texelFetch(iChannel0, ivec2(0,0), 0).r * 0.45;
+    float CD_GRIDSCALE     = 3.0  + texelFetch(iChannel0, ivec2(1,0), 0).r * 12.0;
+    float CD_GRIDTHRESHOLD = 0.1  + texelFetch(iChannel0, ivec2(2,0), 0).r * 0.35;
+    float CD_DISTORTION    = 0.2  + texelFetch(iChannel0, ivec2(3,0), 0).r * 0.8;
+    float CD_GLOWINTENSITY = 2.0  + texelFetch(iChannel0, ivec2(4,0), 0).r * 5.0;
+    float CD_RINGFREQ      = 8.0  + texelFetch(iChannel0, ivec2(5,0), 0).r * 20.0;
+    float CD_ANGULARFREQ   = 5.0  + texelFetch(iChannel0, ivec2(6,0), 0).r * 12.0;
+    float CD_ORBITSPEED    = 0.1  + texelFetch(iChannel0, ivec2(7,0), 0).r * 0.3;
+    float CD_HUE           = texelFetch(iChannel0, ivec2(8,0), 0).r;
+    float CD_SATURATION    = 0.6  + texelFetch(iChannel0, ivec2(9,0), 0).r * 0.6;
+    float CD_BRIGHTNESS    = 1.0  + texelFetch(iChannel0, ivec2(10,0), 0).r * 1.8;
+
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+    float t = iTime * CD_SPEED;
+    float a = atan(uv.y, uv.x);
+    vec2 p = cos(a + t) * vec2(cos(0.5 * t * CD_ORBITSPEED), sin(0.3 * t * CD_ORBITSPEED));
+
+    float d1 = length(uv - p);
+    float d2 = length(uv);
+
+    vec2 uv2 = 2. * cos(log(length(uv)) * CD_DISTORTION - 0.5 * t + log(vec2(d1,d2)/(d1+d2)));
+
+    vec2 fpos = fract(CD_GRIDSCALE * uv2) - 0.5;
+    float d = max(abs(fpos.x), abs(fpos.y));
+    float k = 5. / iResolution.y;
+    float s = smoothstep(-k, k, CD_GRIDTHRESHOLD - d);
+
+    vec3 baseCol = hsv2rgb(vec3(CD_HUE, CD_SATURATION, 1.0));
+    vec3 col = vec3(s * baseCol.r, s * baseCol.g * 0.5, (0.1-0.1 * s) * baseCol.b);
+
+    vec3 glowCol = hsv2rgb(vec3(CD_HUE + 0.1, CD_SATURATION, 1.0));
+    float glowArg = -CD_GLOWINTENSITY * (length(uv - p) + length(uv));
+    float coshVal = (exp(glowArg) + exp(-glowArg)) * 0.5;
+    col += (1.0 / coshVal) * glowCol;
+
+    float c = cos(CD_RINGFREQ * length(uv2) + 4. * t);
+    vec3 ringCol = hsv2rgb(vec3(CD_HUE + 0.3, CD_SATURATION * 0.8, 1.0));
+    col += (0.5 + 0.5 * c) * ringCol *
+           exp(-9. * abs(cos(CD_ANGULARFREQ * a + t) * uv.x
+                       + sin(CD_ANGULARFREQ * a + t) * uv.y
+                       + 0.1 * c));
+
+    col *= CD_BRIGHTNESS;
+    fragColor = vec4(col, 1.0);
+}`;
+
+  return `${bufferA}
+
+// ============================================================
+// ============================================================
+
+${imageCode}`;
 }
 
 const modal = document.getElementById('export-modal');
