@@ -641,6 +641,7 @@
           <option value="14">Fractal</option>
           <option value="15">Maze Lattice</option>
           <option value="16">Floral Thorns</option>
+          <option value="17">Cosmic Distortion</option>
         </select>
       </div>
       <button class="randomize-btn" id="randomize-btn">Randomize Shader</button>
@@ -1827,8 +1828,77 @@
         </div>
       </div>
 
+      <!-- ★ COSMIC DISTORTION CONTROLS -->
+      <div class="controls-section" id="controls-17">
+        <div class="section-title">Presets</div>
+        <div class="presets-grid" id="presets-17"></div>
+
+        <div class="section-title">Animation</div>
+        <div class="control-group">
+          <div class="control-label"><span>Speed</span><span class="control-value" id="val-cd-speed">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-speed"></div>
+          <input type="range" id="cd-speed" min="0.1" max="3" step="0.1" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Orbit Speed</span><span class="control-value" id="val-cd-orbitSpeed">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-orbitSpeed"></div>
+          <input type="range" id="cd-orbitSpeed" min="0.1" max="3" step="0.1" value="1"></div>
+        </div>
+
+        <div class="section-title">Grid</div>
+        <div class="control-group">
+          <div class="control-label"><span>Grid Scale</span><span class="control-value" id="val-cd-gridScale">4.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-gridScale"></div>
+          <input type="range" id="cd-gridScale" min="1" max="10" step="0.5" value="4"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Grid Threshold</span><span class="control-value" id="val-cd-gridThreshold">0.25</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-gridThreshold"></div>
+          <input type="range" id="cd-gridThreshold" min="0.1" max="0.5" step="0.02" value="0.25"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Distortion</span><span class="control-value" id="val-cd-distortion">0.25</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-distortion"></div>
+          <input type="range" id="cd-distortion" min="0.1" max="0.6" step="0.02" value="0.25"></div>
+        </div>
+
+        <div class="section-title">Effects</div>
+        <div class="control-group">
+          <div class="control-label"><span>Glow Intensity</span><span class="control-value" id="val-cd-glowIntensity">2.50</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-glowIntensity"></div>
+          <input type="range" id="cd-glowIntensity" min="1" max="5" step="0.2" value="2.5"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Ring Frequency</span><span class="control-value" id="val-cd-ringFreq">10.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-ringFreq"></div>
+          <input type="range" id="cd-ringFreq" min="3" max="25" step="1" value="10"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Angular Frequency</span><span class="control-value" id="val-cd-angularFreq">9.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-angularFreq"></div>
+          <input type="range" id="cd-angularFreq" min="3" max="20" step="1" value="9"></div>
+        </div>
+
+        <div class="section-title">Color</div>
+        <div class="control-group">
+          <div class="control-label"><span>Hue</span><span class="control-value" id="val-cd-hue">0.05</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-hue"></div>
+          <input type="range" id="cd-hue" min="0" max="1" step="0.02" value="0.05"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Saturation</span><span class="control-value" id="val-cd-saturation">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-saturation"></div>
+          <input type="range" id="cd-saturation" min="0.3" max="2" step="0.1" value="1"></div>
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>Brightness</span><span class="control-value" id="val-cd-brightness">1.00</span></div>
+          <div class="slider-track"><div class="slider-fill" id="fill-cd-brightness"></div>
+          <input type="range" id="cd-brightness" min="0.5" max="2" step="0.1" value="1"></div>
+        </div>
+      </div>
+
       <div class="tip-box">
-        <strong>★ NEW:</strong> 5 bonus shaders - Spiral, Starfield, Fractal, Maze Lattice &amp; Floral Thorns! Press SPACE to pause.
+        <strong>★ NEW:</strong> 6 bonus shaders - Spiral, Starfield, Fractal, Maze Lattice, Floral Thorns &amp; Cosmic Distortion! Press SPACE to pause.
       </div>
     </div>
   </div>
@@ -3154,6 +3224,69 @@ void mainImage(out vec4 fragColor, vec2 fragCoord){
 void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
 `;
 
+// ★ Cosmic Distortion - Logarithmic distortion with grid and waves
+const cosmicDistortionShader = `
+precision highp float;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float u_speed, u_gridScale, u_gridThreshold, u_distortion;
+uniform float u_glowIntensity, u_ringFreq, u_angularFreq, u_hue;
+uniform float u_saturation, u_brightness, u_orbitSpeed;
+
+float seg(in vec2 p, in vec2 a, in vec2 b) {
+    vec2 pa = p-a, ba = b-a;
+    float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+    return length( pa - ba*h );
+}
+
+vec3 hsv2rgb(vec3 c) {
+    vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+    float t = iTime * u_speed;
+    float a = atan(uv.y, uv.x);
+    vec2 p = cos(a + t) * vec2(cos(0.5 * t * u_orbitSpeed), sin(0.3 * t * u_orbitSpeed));
+    vec2 q = (cos(t)) * vec2(cos(t), sin(t));
+
+    float d1 = length(uv - p);
+    float d2 = length(uv - 0.);
+
+    vec2 uv2 = 2. * cos(log(length(uv)) * u_distortion - 0.5 * t + log(vec2(d1,d2)/(d1+d2)));
+
+    vec2 fpos = fract(u_gridScale * uv2) - 0.5;
+    float d = max(abs(fpos.x), abs(fpos.y));
+    float k = 5. / iResolution.y;
+    float s = smoothstep(-k, k, u_gridThreshold - d);
+
+    // Base color with hue shift
+    vec3 baseCol = hsv2rgb(vec3(u_hue, u_saturation, 1.0));
+    vec3 col = vec3(s * baseCol.r, s * baseCol.g * 0.5, (0.1-0.1 * s) * baseCol.b);
+
+    // Glow around orbit point
+    vec3 glowCol = hsv2rgb(vec3(u_hue + 0.1, u_saturation, 1.0));
+    float glowArg = -u_glowIntensity * (length(uv - p) + length(uv));
+    float coshVal = (exp(glowArg) + exp(-glowArg)) * 0.5;
+    col += (1.0 / coshVal) * glowCol;
+
+    // Ring waves
+    float c = cos(u_ringFreq * length(uv2) + 4. * t);
+    vec3 ringCol = hsv2rgb(vec3(u_hue + 0.3, u_saturation * 0.8, 1.0));
+    col += (0.5 + 0.5 * c) * ringCol *
+           exp(-9. * abs(cos(u_angularFreq * a + t) * uv.x
+                       + sin(u_angularFreq * a + t) * uv.y
+                       + 0.1 * c));
+
+    col *= u_brightness;
+    fragColor = vec4(col,1.0);
+}
+void main() { vec4 O; mainImage(O, gl_FragCoord.xy); gl_FragColor = O; }
+`;
+
 // ============== PRESETS ==============
 
 const presetsData = {
@@ -3331,11 +3464,21 @@ const presetsData = {
     { name:"CHAOS", 'ft-speed':2,'ft-mirrorScale':0.35,'ft-mirrorOffset':0.7,'ft-rotationDepth':0.4,'ft-rotationTime':0.05,'ft-fractalLayers':8,'ft-glowIntensity':1,'ft-fogDepth':0.6,'ft-exposure':60000000,'ft-gamma':0.48 },
     { name:"CYBER LOTUS", 'ft-speed':0.8,'ft-mirrorScale':0.4,'ft-mirrorOffset':0.3,'ft-rotationDepth':0.15,'ft-rotationTime':0.008,'ft-fractalLayers':8,'ft-glowIntensity':0.9,'ft-fogDepth':1,'ft-exposure':30000000,'ft-gamma':0.4 },
     { name:"FEVER DREAM", 'ft-speed':2.5,'ft-mirrorScale':0.18,'ft-mirrorOffset':0.8,'ft-rotationDepth':0.5,'ft-rotationTime':0.07,'ft-fractalLayers':7,'ft-glowIntensity':1.5,'ft-fogDepth':0.5,'ft-exposure':90000000,'ft-gamma':0.55 }
+  ],
+  17: [ // Cosmic Distortion
+    { name:"DEFAULT", 'cd-speed':1,'cd-gridScale':4,'cd-gridThreshold':0.25,'cd-distortion':0.25,'cd-glowIntensity':2.5,'cd-ringFreq':10,'cd-angularFreq':9,'cd-orbitSpeed':1,'cd-hue':0.05,'cd-saturation':1,'cd-brightness':1 },
+    { name:"NEON PULSE", 'cd-speed':1.5,'cd-gridScale':6,'cd-gridThreshold':0.3,'cd-distortion':0.3,'cd-glowIntensity':3,'cd-ringFreq':15,'cd-angularFreq':12,'cd-orbitSpeed':1.5,'cd-hue':0.6,'cd-saturation':1.3,'cd-brightness':1.2 },
+    { name:"DEEP VOID", 'cd-speed':0.5,'cd-gridScale':3,'cd-gridThreshold':0.2,'cd-distortion':0.4,'cd-glowIntensity':2,'cd-ringFreq':8,'cd-angularFreq':6,'cd-orbitSpeed':0.5,'cd-hue':0.75,'cd-saturation':0.8,'cd-brightness':0.8 },
+    { name:"FIRE GRID", 'cd-speed':1.2,'cd-gridScale':5,'cd-gridThreshold':0.35,'cd-distortion':0.2,'cd-glowIntensity':3.5,'cd-ringFreq':12,'cd-angularFreq':10,'cd-orbitSpeed':1.2,'cd-hue':0.02,'cd-saturation':1.5,'cd-brightness':1.3 },
+    { name:"OCEAN WAVE", 'cd-speed':0.8,'cd-gridScale':4.5,'cd-gridThreshold':0.28,'cd-distortion':0.35,'cd-glowIntensity':2.2,'cd-ringFreq':6,'cd-angularFreq':5,'cd-orbitSpeed':0.8,'cd-hue':0.55,'cd-saturation':1.1,'cd-brightness':1 },
+    { name:"CYBER MATRIX", 'cd-speed':2,'cd-gridScale':8,'cd-gridThreshold':0.15,'cd-distortion':0.15,'cd-glowIntensity':2.8,'cd-ringFreq':20,'cd-angularFreq':15,'cd-orbitSpeed':2,'cd-hue':0.35,'cd-saturation':1.2,'cd-brightness':1.1 },
+    { name:"SLOW COSMOS", 'cd-speed':0.3,'cd-gridScale':2,'cd-gridThreshold':0.4,'cd-distortion':0.5,'cd-glowIntensity':1.8,'cd-ringFreq':5,'cd-angularFreq':4,'cd-orbitSpeed':0.3,'cd-hue':0.85,'cd-saturation':0.9,'cd-brightness':0.9 },
+    { name:"ELECTRIC STORM", 'cd-speed':2.5,'cd-gridScale':7,'cd-gridThreshold':0.22,'cd-distortion':0.28,'cd-glowIntensity':4,'cd-ringFreq':18,'cd-angularFreq':14,'cd-orbitSpeed':2.5,'cd-hue':0.15,'cd-saturation':1.4,'cd-brightness':1.4 }
   ]
 };
 
-const shaderNames = ["PLASMA VORTEX", "COSMIC MANDALA", "DARK TRANSIT", "NEON GRID", "ELECTRIC ARCS", "NEON SPOKES", "CRYSTAL LATTICE", "RAINBOW NEBULA", "INFERNO FIRE", "WORMHOLE", "NEON LINES", "CYBER WAVES", "SPIRAL", "STARFIELD", "FRACTAL", "MAZE LATTICE", "FLORAL THORNS"];
-const shaderSources = [plasmaVortexShader, cosmicMandalaShader, darkTransitShader, neonGridShader, electricArcsShader, neonSpokesShader, crystalLatticeShader, rainbowNebulaShader, infernoFireShader, wormholeShader, neonLinesShader, cyberWavesShader, spiralShader, starfieldShader, fractalShader, mazeLatticeShader, floralThornsShader];
+const shaderNames = ["PLASMA VORTEX", "COSMIC MANDALA", "DARK TRANSIT", "NEON GRID", "ELECTRIC ARCS", "NEON SPOKES", "CRYSTAL LATTICE", "RAINBOW NEBULA", "INFERNO FIRE", "WORMHOLE", "NEON LINES", "CYBER WAVES", "SPIRAL", "STARFIELD", "FRACTAL", "MAZE LATTICE", "FLORAL THORNS", "COSMIC DISTORTION"];
+const shaderSources = [plasmaVortexShader, cosmicMandalaShader, darkTransitShader, neonGridShader, electricArcsShader, neonSpokesShader, crystalLatticeShader, rainbowNebulaShader, infernoFireShader, wormholeShader, neonLinesShader, cyberWavesShader, spiralShader, starfieldShader, fractalShader, mazeLatticeShader, floralThornsShader, cosmicDistortionShader];
 
 // ============== WEBGL SETUP ==============
 
@@ -3433,7 +3576,8 @@ const sliderConfigs = {
   13: ['sf-volSteps','sf-stepSize','sf-iterations','sf-brightness','sf-distFading','sf-saturation','sf-trailLayers','sf-trailIntensity','sf-flowSpeed','sf-rotSpeed','sf-centerGlow','sf-hue'],
   14: ['fr-iterations','fr-fractScale','fr-ringFreq','fr-ringSpeed','fr-colorSpeed','fr-brightness','fr-falloff','fr-zoom'],
   15: ['ml-speed','ml-tubeWidth','ml-patternScale','ml-rotationSpeed','ml-edgeWidth','ml-reflectivity','ml-brightness','ml-warmth','ml-vignette','ml-fogDistance','ml-raySteps','ml-darkness','ml-contrast','ml-ambient'],
-  16: ['ft-speed','ft-mirrorScale','ft-mirrorOffset','ft-rotationDepth','ft-rotationTime','ft-fractalLayers','ft-glowIntensity','ft-fogDepth','ft-exposure','ft-gamma']
+  16: ['ft-speed','ft-mirrorScale','ft-mirrorOffset','ft-rotationDepth','ft-rotationTime','ft-fractalLayers','ft-glowIntensity','ft-fogDepth','ft-exposure','ft-gamma'],
+  17: ['cd-speed','cd-gridScale','cd-gridThreshold','cd-distortion','cd-glowIntensity','cd-ringFreq','cd-angularFreq','cd-orbitSpeed','cd-hue','cd-saturation','cd-brightness']
 };
 
 const uniformNames = {
@@ -3492,7 +3636,11 @@ const uniformNames = {
   // Floral Thorns
   'ft-speed':'u_speed','ft-mirrorScale':'u_mirrorScale','ft-mirrorOffset':'u_mirrorOffset','ft-rotationDepth':'u_rotationDepth',
   'ft-rotationTime':'u_rotationTime','ft-fractalLayers':'u_fractalLayers','ft-glowIntensity':'u_glowIntensity',
-  'ft-fogDepth':'u_fogDepth','ft-exposure':'u_exposure','ft-gamma':'u_gamma'
+  'ft-fogDepth':'u_fogDepth','ft-exposure':'u_exposure','ft-gamma':'u_gamma',
+  // Cosmic Distortion
+  'cd-speed':'u_speed','cd-gridScale':'u_gridScale','cd-gridThreshold':'u_gridThreshold','cd-distortion':'u_distortion',
+  'cd-glowIntensity':'u_glowIntensity','cd-ringFreq':'u_ringFreq','cd-angularFreq':'u_angularFreq','cd-orbitSpeed':'u_orbitSpeed',
+  'cd-hue':'u_hue','cd-saturation':'u_saturation','cd-brightness':'u_brightness'
 };
 
 function updateSlider(id) {
@@ -3528,12 +3676,12 @@ Object.values(sliderConfigs).flat().forEach(id => {
 
 // ============== PRESET SYSTEM ==============
 
-let currentPresetIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+let currentPresetIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const presetNameEl = document.getElementById('current-preset');
 const shaderTypeEl = document.getElementById('shader-type');
 
 function buildPresetButtons() {
-  for (let s = 0; s < 17; s++) {
+  for (let s = 0; s < 18; s++) {
     const container = document.getElementById('presets-' + s);
     if (!container) continue;
     container.innerHTML = '';
