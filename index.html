@@ -4042,6 +4042,9 @@ function randomizeShader() {
   // For Cosmic Distortion, transition to auto-randomize mode
   if (currentShader === 17) {
     transitionToAutoRandomize();
+    // Force new random values by jumping accTime to a new random position
+    // This ensures clicking Randomize always produces a new result
+    accTime += 7.0 + Math.random() * 10.0; // Jump past current cycle + random offset
     // Clear active preset since we're switching to auto-randomize mode
     const container = document.getElementById('presets-' + currentShader);
     if (container) {
